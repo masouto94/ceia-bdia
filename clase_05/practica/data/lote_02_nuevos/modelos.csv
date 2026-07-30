@@ -1,0 +1,4 @@
+id,usuario_id,nombre,tipo_modelo_id,version,fecha_creacion
+10,8, Asistente de soporte ,5, V1 ,15/03/2026 11:00:00
+11,999,Usuario desconocido,5,v1,2026-03-15T11:10:00Z
+12,8,Tipo desconocido,999,v1,2026-03-15T11:20:00Z

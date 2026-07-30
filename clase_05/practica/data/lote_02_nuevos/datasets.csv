@@ -1,0 +1,5 @@
+id,usuario_id,nombre,tipo_fuente_id,fuente_detalle,cantidad_registros,fecha_creacion
+10,8, Logs de inferencia ,7, archivo CSV ,12500,15/03/2026 10:00:00
+11,8,Cantidad negativa,7,Archivo CSV,-10,2026-03-15T10:10:00Z
+12,999,Usuario desconocido,7,Archivo CSV,100,2026-03-15T10:20:00Z
+13,8,Tipo desconocido,999,Archivo CSV,100,2026-03-15T10:30:00Z

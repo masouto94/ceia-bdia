@@ -1,0 +1,10 @@
+id,dataset_id,nombre,descripcion,fecha,finalizado
+1,1,Experimento lluvia v1,Primer experimento para predecir lluvia usando sensores ambientales.,2026-03-02,true
+2,2,Experimento cultivos v1,Primer experimento para clasificar imágenes de cultivos.,2026-03-02,true
+3,3,Experimento demanda v1,Prueba inicial para predecir demanda con datos históricos.,2026-03-02,false
+4,9,Experimento lluvia v2,Segunda prueba para predecir lluvia con más datos históricos.,2026-03-09,true
+5,5,Experimento industrial v1,Clasificación de eventos anómalos en sensores industriales.,2026-03-09,true
+6,6,Experimento fraude v1,Detección inicial de posibles transacciones fraudulentas.,2026-03-09,true
+7,6,Experimento fraude v2,Ajuste de parámetros para mejorar recall en fraude.,2026-03-10,false
+8,7,Experimento tickets v1,Clasificación automática de tickets por prioridad.,2026-03-10,true
+9,7,Experimento tickets v2,Comparación de métricas luego de balancear clases.,2026-03-10,false

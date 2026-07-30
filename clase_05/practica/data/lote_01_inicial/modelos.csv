@@ -1,0 +1,10 @@
+id,usuario_id,nombre,tipo_modelo_id,version,fecha_creacion
+1,1,Clasificador de lluvia,1,v1,2026-03-01T12:00:00Z
+2,1,Detector de cultivos,4,v1,2026-03-01T12:10:00Z
+3,2,Predicción de demanda,3,v1,2026-03-01T12:20:00Z
+4,3,Análisis de sentimiento,1,v1,2026-03-01T12:30:00Z
+5,4,Clasificador industrial,1,v1,2026-03-08T12:00:00Z
+6,5,Detector de fraude,1,v2,2026-03-08T12:10:00Z
+7,5,Segmentador de clientes,2,v1,2026-03-08T12:20:00Z
+8,6,Clasificador de tickets,1,v1,2026-03-08T12:30:00Z
+9,1,Pronóstico climático,3,v2,2026-03-08T12:40:00Z

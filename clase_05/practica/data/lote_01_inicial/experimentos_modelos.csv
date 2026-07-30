@@ -1,0 +1,11 @@
+experimento_id,modelo_id,parametros,resultado,parametros_jsonb
+1,1,max_depth=5,Resultado inicial aceptable,"{""max_depth"":5,""criterion"":""gini""}"
+2,2,epochs=10,Buen desempeño inicial,"{""epochs"":10,""batch_size"":32,""optimizer"":""adam""}"
+3,3,test_size=0.2,Modelo en evaluación,"{""test_size"":0.2,""random_state"":42}"
+4,9,max_depth=8;criterion=gini,Mejora contra la versión inicial,"{""max_depth"":8,""criterion"":""gini""}"
+5,5,max_depth=6;criterion=entropy,Buen desempeño en eventos frecuentes,"{""max_depth"":6,""criterion"":""entropy""}"
+6,6,threshold=0.65;class_weight=balanced,Alta precisión inicial,"{""threshold"":0.65,""class_weight"":""balanced""}"
+6,7,n_clusters=4,Segmentos útiles para análisis exploratorio,"{""n_clusters"":4,""algorithm"":""k-means""}"
+7,6,threshold=0.45;class_weight=balanced,Mejora recall baja precisión,"{""threshold"":0.45,""class_weight"":""balanced""}"
+8,8,max_features=5000,Clasificación inicial aceptable,"{""max_features"":5000,""ngram_range"":[1,1]}"
+9,8,max_features=8000;class_weight=balanced,Modelo en evaluación,"{""max_features"":8000,""ngram_range"":[1,2],""class_weight"":""balanced""}"

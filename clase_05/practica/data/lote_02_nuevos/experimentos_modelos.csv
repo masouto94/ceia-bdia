@@ -1,0 +1,4 @@
+experimento_id,modelo_id,parametros,resultado,parametros_jsonb
+10,10,temperature=0.2,Resultado inicial,"{""temperature"":0.2}"
+10,999,temperature=0.4,Modelo inexistente,"{""temperature"":0.4}"
+10,10,temperature=0.2,Fila duplicada,"{""temperature"":0.2}"

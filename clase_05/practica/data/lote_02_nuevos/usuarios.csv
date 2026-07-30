@@ -1,0 +1,4 @@
+id,nombre,email,activo,fecha_alta
+8,  Elena Vega  , ELENA@EXAMPLE.COM ,Sí,15/03/2026 09:00:00
+9,Usuario sin correo,,true,2026-03-15T09:10:00Z
+1,Ana duplicada,ana.duplicada@example.com,true,2026-03-15T09:20:00Z

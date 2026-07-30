@@ -1,0 +1,5 @@
+id,dataset_id,nombre,descripcion,fecha,finalizado
+10,10, Experimento soporte v1 ,Evaluación inicial del asistente.,15/03/2026,SI
+11,999,Dataset desconocido,Referencia inválida.,2026-03-15,true
+12,10,Fecha inválida,Fecha deliberadamente inválida.,31/02/2026,true
+13,10,Booleano inválido,Estado deliberadamente inválido.,2026-03-15,quizás

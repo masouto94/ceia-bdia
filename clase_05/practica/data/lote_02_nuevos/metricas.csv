@@ -1,0 +1,7 @@
+id,experimento_id,nombre,valor,fecha_registro
+31,10, Accuracy ,"0,87",15/03/2026 18:00:00
+32,10,recall,87%,2026-03-15T18:01:00Z
+33,10,loss,-0.10,2026-03-15T18:02:00Z
+34,999,accuracy,0.90,2026-03-15T18:03:00Z
+35,10,métrica_desconocida,0.50,2026-03-15T18:04:00Z
+36,10,accuracy,0.90,31/02/2026 18:05:00

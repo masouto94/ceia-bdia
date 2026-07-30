@@ -1,0 +1,10 @@
+id,usuario_id,nombre,tipo_fuente_id,fuente_detalle,cantidad_registros,fecha_creacion
+1,1,Sensores ambientales,1,IoT,15000,2026-03-01T11:00:00Z
+2,1,Imágenes de cultivos,4,Visión computacional,5000,2026-03-01T11:10:00Z
+3,2,Histórico de ventas,2,Sistema transaccional,25000,2026-03-01T11:20:00Z
+4,3,Comentarios de usuarios,3,Aplicación web,8000,2026-03-01T11:30:00Z
+5,4,Sensores industriales,1,IoT industrial,42000,2026-03-08T11:00:00Z
+6,5,Transacciones bancarias,2,Sistema financiero,120000,2026-03-08T11:10:00Z
+7,6,Tickets de soporte,5,Mesa de ayuda,18000,2026-03-08T11:20:00Z
+8,6,Audios de soporte,5,Call center,9000,2026-03-08T11:30:00Z
+9,1,Clima histórico regional,6,Servicio meteorológico,65000,2026-03-08T11:40:00Z

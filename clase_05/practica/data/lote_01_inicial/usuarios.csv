@@ -1,0 +1,8 @@
+id,nombre,email,activo,fecha_alta
+1,Ana Pérez,ana@example.com,true,2026-03-01T09:00:00Z
+2,Luis Gómez,luis@example.com,true,2026-03-01T09:10:00Z
+3,María Torres,maria@example.com,true,2026-03-01T09:20:00Z
+4,Carla Ruiz,carla@example.com,true,2026-03-08T10:00:00Z
+5,Diego Fernández,diego@example.com,true,2026-03-08T10:10:00Z
+6,Sofía Herrera,sofia@example.com,true,2026-03-08T10:20:00Z
+7,Invitado sin carga,invitado@example.com,true,2026-03-08T10:30:00Z
