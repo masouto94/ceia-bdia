@@ -1,0 +1,45 @@
+services:
+  db:
+    image: postgres:16.14
+    container_name: db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: grupo1
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: 12345
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d grupo1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    ports:
+    - "5432:5432"
+    user: root
+    volumes:
+    - ./postgres_data:/var/lib/postgresql/data
+    - ./sql:/sql
+
+  pgadmin:
+    image: dpage/pgadmin4:9.17
+    container_name: pgadmin
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@grupo1.net
+      PGADMIN_DEFAULT_PASSWORD: 12345
+    healthcheck:
+      test: ["CMD", "wget", "-O", "-", "http://localhost/misc/ping"]
+      interval: 10s
+      timeout: 10s
+      retries: 3
+      start_period: 160s
+    ports:
+    - "80:80"
+    user: root
+    depends_on:
+      db:
+        condition: service_healthy
+        restart: true
+    volumes:
+    - ./pgadmin_data:/var/lib/pgadmin
+    - ./sql:/sql:ro

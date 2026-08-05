@@ -36,3 +36,6 @@ exports/
 
 # Material de desarrollo de las clases
 material_desarrollo/
+
+tp_integrador/pgadmin_data
+tp_integrador/postgres_data
