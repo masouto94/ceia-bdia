@@ -97,7 +97,8 @@ erDiagram
     REPORT {
         uuid id PK
         uuid interaction_id FK
-        varchar reason
+        varchar description
+        enum reason
         enum status
     }
 

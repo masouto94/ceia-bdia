@@ -18,7 +18,8 @@ services:
     user: root
     volumes:
     - ./postgres_data:/var/lib/postgresql/data
-    - ./sql:/sql
+    - ./sql/ddl.sql:/docker-entrypoint-initdb.d/01_ddl.sql
+    - ./sql/seed.sql:/docker-entrypoint-initdb.d/02_seed.sql
 
   pgadmin:
     image: dpage/pgadmin4:9.17
@@ -42,4 +43,3 @@ services:
         restart: true
     volumes:
     - ./pgadmin_data:/var/lib/pgadmin
-    - ./sql:/sql:ro
