@@ -1,0 +1,175 @@
+erDiagram
+    ROLE {
+        uuid id PK
+        varchar name
+    }
+
+    USER {
+        uuid id PK
+        varchar username
+        varchar email
+        varchar password_hash
+        timestamp created_at
+    }
+
+    USER_ROLE {
+        uuid user_id PK,FK
+        uuid role_id PK,FK
+        timestamp assigned_at
+    }
+
+    CATEGORY {
+        uuid id PK
+        varchar name
+        varchar description
+    }
+
+    TAG {
+        uuid id PK
+        varchar name
+    }
+
+    PREFERENCE {
+        uuid id PK
+        uuid user_id FK
+        uuid category_id FK
+    }
+
+    CONTENT {
+        uuid id PK
+        uuid category_id FK
+        varchar title
+        varchar content_type
+        timestamp created_at
+    }
+
+    CONTENT_TAG {
+        uuid content_id PK,FK
+        uuid tag_id PK,FK
+    }
+
+    HISTORY {
+        uuid id PK
+        uuid user_id FK
+        uuid content_id FK
+        timestamp viewed_at
+    }
+
+    SEARCH {
+        uuid id PK
+        uuid user_id FK
+        varchar query_text
+        timestamp searched_at
+    }
+
+    SEARCH_RESULT {
+        uuid search_id PK,FK
+        uuid content_id PK,FK
+        int rank_position
+    }
+
+    INTERACTION {
+        uuid id PK
+        uuid user_id FK
+        uuid content_id FK
+        enum interaction_type
+        timestamp created_at
+    }
+
+    VIEW {
+        uuid id PK
+        uuid interaction_id FK
+        int duration_seconds
+    }
+
+    REACTION {
+        uuid id PK
+        uuid interaction_id FK
+        enum reaction_type
+    }
+
+    SHARE {
+        uuid id PK
+        uuid interaction_id FK
+        varchar platform
+    }
+
+    REPORT {
+        uuid id PK
+        uuid interaction_id FK
+        varchar description
+        enum reason
+        enum status
+    }
+
+    MANAGEMENT {
+        uuid id PK
+        uuid interaction_id FK
+        enum action_type
+    }
+
+    VIDEO {
+        uuid id PK
+        uuid content_id FK
+        varchar video_url
+        int duration_seconds
+    }
+
+    ARTICLE {
+        uuid id PK
+        uuid content_id FK
+        varchar author
+        text full_text
+    }
+
+    POST {
+        uuid id PK
+        uuid content_id FK
+        boolean is_pinned
+    }
+
+    COURSE {
+        uuid id PK
+        uuid content_id FK
+        varchar description
+        int total_modules
+    }
+
+    DOCUMENT {
+        uuid id PK
+        uuid content_id FK
+        varchar file_format
+        int file_size_kb
+    }
+
+    USER ||--o{ USER_ROLE : "has"
+    ROLE ||--o{ USER_ROLE : "assigned to"
+
+    USER ||--o{ PREFERENCE : "configures"
+    USER ||--o{ HISTORY : "logs"
+    USER ||--o{ SEARCH : "performs"
+    USER ||--o{ INTERACTION : "initiates"
+
+    CATEGORY ||--o{ PREFERENCE : "selected in"
+    CATEGORY ||--o{ CONTENT : "classifies"
+
+    CONTENT ||--o{ CONTENT_TAG : "has"
+    TAG ||--o{ CONTENT_TAG : "assigned to"
+
+    SEARCH ||--o{ SEARCH_RESULT : "produces"
+    CONTENT ||--o{ SEARCH_RESULT : "returned in"
+
+    CONTENT ||--o{ HISTORY : "tracked in"
+    CONTENT ||--o{ INTERACTION : "receives"
+
+    INTERACTION ||--o| VIEW : "specializes as"
+    INTERACTION ||--o| REACTION : "specializes as"
+    INTERACTION ||--o| SHARE : "specializes as"
+    INTERACTION ||--o| REPORT : "specializes as"
+    INTERACTION ||--o| MANAGEMENT : "specializes as"
+
+    CONTENT ||--o| VIDEO : "specializes as"
+    CONTENT ||--o| ARTICLE : "specializes as"
+    CONTENT ||--o| POST : "specializes as"
+    CONTENT ||--o| COURSE : "specializes as"
+    CONTENT ||--o| DOCUMENT : "specializes as"
