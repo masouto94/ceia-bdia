@@ -1,0 +1,86 @@
+erDiagram
+
+    ROL {
+    }
+
+    USUARIO {
+    }
+
+    PREFERENCIA {
+    }
+
+    HISTORIAL {
+    }
+
+    BUSQUEDA {
+    }
+
+    INTERACCION {
+    }
+
+    CONTENIDO {
+    }
+
+    CATEGORIA {
+    }
+
+    ETIQUETA {
+    }
+
+    VISUALIZACION {
+    }
+
+    REACCION {
+    }
+
+    COMPARTICION {
+    }
+
+    DENUNCIA {
+    }
+
+    GESTION {
+    }
+
+    VIDEO {
+    }
+
+    ARTICULO {
+    }
+
+    PUBLICACION {
+    }
+
+    CURSO {
+    }
+
+    DOCUMENTO {
+    }
+
+    ROL ||--o{ USUARIO : tiene
+
+    USUARIO ||--o{ PREFERENCIA : posee
+    USUARIO ||--o{ HISTORIAL : posee
+    USUARIO ||--o{ BUSQUEDA : realiza
+    USUARIO ||--o{ INTERACCION : realiza
+
+    CONTENIDO ||--o{ HISTORIAL : aparece_en
+    CONTENIDO ||--o{ BUSQUEDA : resultado
+    CONTENIDO ||--o{ INTERACCION : recibe
+
+    CONTENIDO }o--o{ CATEGORIA : clasificado_en
+    CONTENIDO }o--o{ ETIQUETA : etiquetado_con
+
+    PREFERENCIA }o--o{ CATEGORIA : preferencia
+
+    INTERACCION ||--|| VISUALIZACION : extends
+    INTERACCION ||--|| REACCION : extends
+    INTERACCION ||--|| COMPARTICION : extends
+    INTERACCION ||--|| DENUNCIA : extends
+    INTERACCION ||--|| GESTION : extends
+
+    CONTENIDO ||--|| VIDEO : extends
+    CONTENIDO ||--|| ARTICULO : extends
+    CONTENIDO ||--|| PUBLICACION : extends
+    CONTENIDO ||--|| CURSO : extends
+    CONTENIDO ||--|| DOCUMENTO : extends
