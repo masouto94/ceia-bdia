@@ -2,6 +2,7 @@ CREATE SCHEMA IF NOT EXISTS public;
 SET search_path TO public;
 
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
+CREATE EXTENSION IF NOT EXISTS "vector";
 
 CREATE TYPE interaction_type_enum AS ENUM (
     'view',
@@ -186,6 +187,16 @@ CREATE TABLE DOCUMENT (
     file_size_kb INT NOT NULL
 );
 
+CREATE TABLE POST_EMBEDDING (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    post_id UUID NOT NULL REFERENCES POST(id) ON DELETE CASCADE,
+    chunk_index INT NOT NULL,
+    chunk_text TEXT NOT NULL,
+    embedding vector(384) NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE (post_id, chunk_index)
+);
+
 CREATE INDEX idx_user_role_user_id ON USER_ROLE(user_id);
 CREATE INDEX idx_user_role_role_id ON USER_ROLE(role_id);
 CREATE INDEX idx_preference_user_id ON PREFERENCE(user_id);
@@ -200,3 +211,5 @@ CREATE INDEX idx_search_result_search_id ON SEARCH_RESULT(search_id);
 CREATE INDEX idx_search_result_content_id ON SEARCH_RESULT(content_id);
 CREATE INDEX idx_interaction_user_id ON INTERACTION(user_id);
 CREATE INDEX idx_interaction_content_id ON INTERACTION(content_id);
+CREATE INDEX idx_post_embedding_post_id ON POST_EMBEDDING(post_id);
+CREATE INDEX idx_post_embedding_vector ON POST_EMBEDDING USING hnsw (embedding vector_cosine_ops);
