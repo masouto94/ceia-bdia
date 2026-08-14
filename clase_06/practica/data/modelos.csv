@@ -1,0 +1,7 @@
+modelo_id,nombre,dataset_id,equipo_id,version_actual
+MD01,Clasificador de lluvia,DS01,EQ03,v1
+MD02,Detector de fraude,DS05,EQ03,v2
+MD03,Clasificador de tickets,DS06,EQ03,v1
+MD04,Prediccion de demanda,DS03,EQ03,v1
+MD05,Detector de cultivos,DS02,EQ03,v1
+MD06,Pronostico climatico,DS07,EQ03,v2

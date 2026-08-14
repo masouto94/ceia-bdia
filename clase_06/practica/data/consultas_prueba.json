@@ -1,0 +1,260 @@
+[
+  {
+    "consulta_id": "CON-01",
+    "consulta": "¿Por qué se demora tanto el registro de nuevos experimentos durante los primeros días de cada mes?",
+    "documentos_relevantes_esperados": [
+      "DOC-008",
+      "DOC-009"
+    ],
+    "categoria_esperada": "oltp_olap",
+    "motivo_relevancia": "Describe exactamente el sintoma (lentitud al registrar experimentos) y su causa raiz (contencion de recursos), sin usar los terminos OLTP/OLAP: prueba que la busqueda semantica encuentra el par incidente-analisis aunque la consulta no use vocabulario tecnico.",
+    "filtro_sql_sugerido": "WHERE d.categoria = 'oltp_olap' AND f.fecha_indexacion >= '2026-02-01'"
+  },
+  {
+    "consulta_id": "CON-02",
+    "consulta": "¿Qué información de la plataforma no puede salir de la organización bajo ninguna circunstancia?",
+    "documentos_relevantes_esperados": [
+      "DOC-003"
+    ],
+    "categoria_esperada": "infraestructura_despliegue",
+    "motivo_relevancia": "El documento formaliza una restriccion de residencia de datos sensibles (transacciones bancarias) sin necesidad de que la consulta mencione 'on-premise' o 'DS05' explicitamente.",
+    "filtro_sql_sugerido": "WHERE d.categoria = 'infraestructura_despliegue' AND d.activo = TRUE"
+  },
+  {
+    "consulta_id": "CON-03",
+    "consulta": "Nos llegó una factura de cómputo en la nube mucho más alta de lo esperado, ¿alguien investigó por qué?",
+    "documentos_relevantes_esperados": [
+      "DOC-002"
+    ],
+    "categoria_esperada": "infraestructura_despliegue",
+    "motivo_relevancia": "El incidente describe una instancia elastica olvidada encendida sin usar palabras como 'factura' textualmente, sino 'consumo de computo' y 'costo incremental'.",
+    "filtro_sql_sugerido": "WHERE d.categoria = 'infraestructura_despliegue' AND f.fecha_indexacion < '2026-02-01'"
+  },
+  {
+    "consulta_id": "CON-04",
+    "consulta": "¿Cómo podemos bajar lo que gastamos moviendo datos entre nuestros servidores y la nube?",
+    "documentos_relevantes_esperados": [
+      "DOC-030"
+    ],
+    "categoria_esperada": "big_data_costos",
+    "motivo_relevancia": "La propuesta habla de 'transferencia de datos entre el cluster propio y la capacidad cloud elastica' como reformulacion indirecta de costos de transferencia.",
+    "filtro_sql_sugerido": "WHERE d.categoria = 'big_data_costos'"
+  },
+  {
+    "consulta_id": "CON-05",
+    "consulta": "Hay carpetas en el almacenamiento de las que nadie sabe quién las creó ni para qué sirven",
+    "documentos_relevantes_esperados": [
+      "DOC-016"
+    ],
+    "categoria_esperada": "data_lake",
+    "motivo_relevancia": "Es el ejemplo directo de 'archivos acumulados sin fecha, propietario ni descripcion' sin usar el termino 'data swamp'.",
+    "filtro_sql_sugerido": "WHERE d.categoria = 'data_lake' AND d.activo = TRUE"
+  },
+  {
+    "consulta_id": "CON-06",
+    "consulta": "¿Estamos guardando archivos repetidos que ocupan espacio sin ninguna razón?",
+    "documentos_relevantes_esperados": [
+      "DOC-017",
+      "DOC-019"
+    ],
+    "categoria_esperada": "data_lake",
+    "motivo_relevancia": "Relaciona el hallazgo de duplicados exactos con la propuesta de limpieza posterior; comparte vocabulario con DOC-024 (duplicados en Bronce) pero pertenece a un problema distinto, util para mostrar falsos positivos de busqueda literal.",
+    "filtro_sql_sugerido": "WHERE d.categoria = 'data_lake'"
+  },
+  {
+    "consulta_id": "CON-07",
+    "consulta": "Necesito entender qué diferencia hay entre el dato tal cual llega y el dato ya revisado y confiable",
+    "documentos_relevantes_esperados": [
+      "DOC-024",
+      "DOC-025"
+    ],
+    "categoria_esperada": "arquitectura_medallion",
+    "motivo_relevancia": "Formulacion indirecta de la diferencia entre capa Bronce y Plata sin nombrar esas capas en la consulta. El esquema minimo no tiene columna capa_medallion: el filtro solo acota por categoria y la distincion Bronce/Plata queda a cargo de la busqueda semantica.",
+    "filtro_sql_sugerido": "WHERE d.categoria = 'arquitectura_medallion'"
+  },
+  {
+    "consulta_id": "CON-08",
+    "consulta": "Un experimento de detección de fraude quedó con métricas contadas de más y hay que corregirlo",
+    "documentos_relevantes_esperados": [
+      "DOC-014"
+    ],
+    "categoria_esperada": "warehouse_analitico",
+    "motivo_relevancia": "Describe filas duplicadas en la tabla de hechos tras un reproceso sin usar el termino tecnico 'duplicados' de forma literal ('contadas de mas').",
+    "filtro_sql_sugerido": "WHERE d.categoria = 'warehouse_analitico'"
+  },
+  {
+    "consulta_id": "CON-09",
+    "consulta": "¿Qué reportes de calidad de datos siguen vigentes en este momento?",
+    "documentos_relevantes_esperados": [
+      "DOC-014",
+      "DOC-024",
+      "DOC-029"
+    ],
+    "categoria_esperada": "arquitectura_medallion",
+    "motivo_relevancia": "Consulta amplia que debe combinarse con filtros estructurados porque el tipo de documento y el estado son atributos, no contenido semantico.",
+    "filtro_sql_sugerido": "WHERE d.categoria = 'arquitectura_medallion' AND d.activo = TRUE"
+  },
+  {
+    "consulta_id": "CON-10",
+    "consulta": "¿Qué se hace cuando los datos llegan con fechas y formatos que no coinciden entre archivos?",
+    "documentos_relevantes_esperados": [
+      "DOC-024"
+    ],
+    "categoria_esperada": "arquitectura_medallion",
+    "motivo_relevancia": "Describe el manejo de inconsistencias en Bronce sin mencionar 'Bronce' de forma prominente en la consulta.",
+    "filtro_sql_sugerido": "WHERE d.categoria = 'arquitectura_medallion'"
+  },
+  {
+    "consulta_id": "CON-11",
+    "consulta": "¿Cómo se corrigen y validan los datos antes de que pasen a la siguiente etapa del pipeline?",
+    "documentos_relevantes_esperados": [
+      "DOC-025"
+    ],
+    "categoria_esperada": "arquitectura_medallion",
+    "motivo_relevancia": "Es la descripcion funcional de las tareas de la capa Plata, semanticamente cercana a DOC-024 pero correspondiente a la etapa siguiente.",
+    "filtro_sql_sugerido": "WHERE d.categoria = 'arquitectura_medallion' AND d.activo = TRUE"
+  },
+  {
+    "consulta_id": "CON-12",
+    "consulta": "¿Cómo puedo rastrear de dónde sale un número que aparece en un dashboard ejecutivo?",
+    "documentos_relevantes_esperados": [
+      "DOC-026"
+    ],
+    "categoria_esperada": "arquitectura_medallion",
+    "motivo_relevancia": "Pregunta directa por trazabilidad extremo a extremo, resuelta por el documento que describe el recorrido Bronce-Plata-Oro-tablero.",
+    "filtro_sql_sugerido": "WHERE d.categoria = 'arquitectura_medallion'"
+  },
+  {
+    "consulta_id": "CON-13",
+    "consulta": "¿Nos conviene seguir ampliando el warehouse actual o migrar a otro tipo de arquitectura?",
+    "documentos_relevantes_esperados": [
+      "DOC-020"
+    ],
+    "categoria_esperada": "lakehouse",
+    "motivo_relevancia": "Corresponde a la evaluacion comparativa explicita entre warehouse, lake y lakehouse.",
+    "filtro_sql_sugerido": "WHERE d.categoria = 'lakehouse'"
+  },
+  {
+    "consulta_id": "CON-14",
+    "consulta": "¿En qué casos conviene guardar datos sin estructurarlos de antemano en vez de un warehouse tradicional?",
+    "documentos_relevantes_esperados": [
+      "DOC-020",
+      "DOC-013"
+    ],
+    "categoria_esperada": "lakehouse",
+    "motivo_relevancia": "Semanticamente cercana a CON-13 pero enfocada en el data lake y en la eleccion ETL/ELT, util para ver como la busqueda distingue matices dentro del mismo tema.",
+    "filtro_sql_sugerido": "WHERE d.categoria IN ('lakehouse', 'warehouse_analitico')"
+  },
+  {
+    "consulta_id": "CON-15",
+    "consulta": "¿Ya contamos con una arquitectura lakehouse completa y madura?",
+    "documentos_relevantes_esperados": [
+      "DOC-022"
+    ],
+    "categoria_esperada": "lakehouse",
+    "motivo_relevancia": "El documento responde negativamente y detalla que falta, siendo un caso claro de correspondencia semantica con la pregunta.",
+    "filtro_sql_sugerido": "WHERE d.categoria = 'lakehouse' AND d.activo = TRUE"
+  },
+  {
+    "consulta_id": "CON-16",
+    "consulta": "¿Deberíamos sumar capacidades más avanzadas de gestión de tablas ahora mismo o esperar a necesitarlas?",
+    "documentos_relevantes_esperados": [
+      "DOC-021"
+    ],
+    "categoria_esperada": "lakehouse",
+    "motivo_relevancia": "Formulacion indirecta de la decision de no adoptar lakehouse completo para evitar complejidad innecesaria.",
+    "filtro_sql_sugerido": "WHERE d.categoria = 'lakehouse' AND d.activo = TRUE"
+  },
+  {
+    "consulta_id": "CON-17",
+    "consulta": "¿Conviene transformar los datos antes de cargarlos o cargarlos primero y transformarlos después?",
+    "documentos_relevantes_esperados": [
+      "DOC-013"
+    ],
+    "categoria_esperada": "warehouse_analitico",
+    "motivo_relevancia": "Consulta directa sobre la eleccion ETL vs ELT para una fuente nueva.",
+    "filtro_sql_sugerido": "WHERE d.categoria = 'warehouse_analitico'"
+  },
+  {
+    "consulta_id": "CON-18",
+    "consulta": "¿Nuestra plataforma combina servidores propios con capacidad contratada a un proveedor externo?",
+    "documentos_relevantes_esperados": [
+      "DOC-001",
+      "DOC-004"
+    ],
+    "categoria_esperada": "infraestructura_despliegue",
+    "motivo_relevancia": "Describe el esquema hibrido on-premise/cloud y la decision de sostenerlo frente a una propuesta de consolidacion total.",
+    "filtro_sql_sugerido": "WHERE d.categoria = 'infraestructura_despliegue' AND d.activo = TRUE"
+  },
+  {
+    "consulta_id": "CON-19",
+    "consulta": "¿Hasta cuánto puede crecer el tráfico de datos antes de que un componente deje de aguantarlo?",
+    "documentos_relevantes_esperados": [
+      "DOC-028"
+    ],
+    "categoria_esperada": "big_data_costos",
+    "motivo_relevancia": "Pregunta por limites de escalabilidad, resuelta por el informe sobre crecimiento de eventos de inferencia por encima de lo dimensionado.",
+    "filtro_sql_sugerido": "WHERE d.categoria = 'big_data_costos' AND f.fecha_indexacion >= '2026-05-01'"
+  },
+  {
+    "consulta_id": "CON-20",
+    "consulta": "Los registros que recibimos no siempre traen los mismos campos completos, ¿es un problema real?",
+    "documentos_relevantes_esperados": [
+      "DOC-029"
+    ],
+    "categoria_esperada": "big_data_costos",
+    "motivo_relevancia": "Describe variedad y veracidad del dato (campos ausentes, marcas de tiempo imposibles) sin usar esos terminos tecnicos.",
+    "filtro_sql_sugerido": "WHERE d.categoria = 'big_data_costos'"
+  },
+  {
+    "consulta_id": "CON-21",
+    "consulta": "Un tablero mostró un número que no coincidía con lo que había en los archivos más recientes de la capa intermedia",
+    "documentos_relevantes_esperados": [
+      "DOC-023"
+    ],
+    "categoria_esperada": "lakehouse",
+    "motivo_relevancia": "Describe la desincronizacion entre Plata y el warehouse sin nombrar 'Plata' ni 'sincronizacion' de forma literal.",
+    "filtro_sql_sugerido": "WHERE d.categoria = 'lakehouse' AND d.activo = TRUE"
+  },
+  {
+    "consulta_id": "CON-22",
+    "consulta": "¿Nos conviene contratar un servicio de base de datos administrado por un proveedor o seguir operando el nuestro?",
+    "documentos_relevantes_esperados": [
+      "DOC-005",
+      "DOC-007"
+    ],
+    "categoria_esperada": "servicios_cloud",
+    "motivo_relevancia": "Cubre dos evaluaciones sobre servicios gestionados frente a infraestructura propia, en dos componentes distintos del mismo tema.",
+    "filtro_sql_sugerido": "WHERE d.categoria = 'servicios_cloud'"
+  },
+  {
+    "consulta_id": "CON-23",
+    "consulta": "¿Es lo mismo usar una API compatible con almacenamiento de objetos que contratar un servicio de almacenamiento en la nube?",
+    "documentos_relevantes_esperados": [
+      "DOC-006"
+    ],
+    "categoria_esperada": "servicios_cloud",
+    "motivo_relevancia": "Comparte vocabulario de almacenamiento con consultas de IaaS/PaaS pero resuelve una confusion conceptual especifica distinta de CON-22.",
+    "filtro_sql_sugerido": "WHERE d.categoria = 'servicios_cloud'"
+  },
+  {
+    "consulta_id": "CON-24",
+    "consulta": "Encontramos un error en una regla de cálculo y necesitamos rehacer los resultados de meses anteriores",
+    "documentos_relevantes_esperados": [
+      "DOC-027"
+    ],
+    "categoria_esperada": "arquitectura_medallion",
+    "motivo_relevancia": "Formulacion indirecta de reprocesamiento historico por correccion de una regla de normalizacion.",
+    "filtro_sql_sugerido": "WHERE d.categoria = 'arquitectura_medallion'"
+  },
+  {
+    "consulta_id": "CON-25",
+    "consulta": "Buscar problemas de calidad relacionados con la capa Plata, pero solamente en documentos vigentes del equipo de Ingeniería de Datos",
+    "documentos_relevantes_esperados": [
+      "DOC-025"
+    ],
+    "categoria_esperada": "arquitectura_medallion",
+    "motivo_relevancia": "Consulta de ejemplo que exige combinar similitud semantica sobre 'calidad en Plata' con un filtro estructurado (categoria + activo). La mencion a 'equipo de Ingenieria de Datos' no tiene columna propia en el esquema minimo de la practica (documentos/fragmentos no guardan equipo_id): queda como motivacion para la extension opcional con JSONB del slide 16.",
+    "filtro_sql_sugerido": "WHERE d.categoria = 'arquitectura_medallion' AND d.activo = TRUE"
+  }
+]
