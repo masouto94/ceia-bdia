@@ -41,6 +41,13 @@ CREATE TYPE action_type_enum AS ENUM (
     'delete'
 );
 
+CREATE TYPE embedding_source_enum AS ENUM (
+    'title',
+    'body',
+    'full_text',
+    'description'
+);
+
 CREATE TABLE ROLE (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name VARCHAR(100) NOT NULL UNIQUE
@@ -170,7 +177,8 @@ CREATE TABLE ARTICLE (
 CREATE TABLE POST (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     content_id UUID NOT NULL UNIQUE REFERENCES CONTENT(id) ON DELETE CASCADE,
-    is_pinned BOOLEAN NOT NULL DEFAULT FALSE
+    is_pinned BOOLEAN NOT NULL DEFAULT FALSE,
+    body TEXT NOT NULL
 );
 
 CREATE TABLE COURSE (
@@ -187,14 +195,15 @@ CREATE TABLE DOCUMENT (
     file_size_kb INT NOT NULL
 );
 
-CREATE TABLE POST_EMBEDDING (
+CREATE TABLE CONTENT_EMBEDDING (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    post_id UUID NOT NULL REFERENCES POST(id) ON DELETE CASCADE,
+    content_id UUID NOT NULL REFERENCES CONTENT(id) ON DELETE CASCADE,
+    source_type embedding_source_enum NOT NULL,
     chunk_index INT NOT NULL,
     chunk_text TEXT NOT NULL,
     embedding vector(384) NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE (post_id, chunk_index)
+    UNIQUE (content_id, source_type, chunk_index)
 );
 
 CREATE INDEX idx_user_role_user_id ON USER_ROLE(user_id);
@@ -211,5 +220,5 @@ CREATE INDEX idx_search_result_search_id ON SEARCH_RESULT(search_id);
 CREATE INDEX idx_search_result_content_id ON SEARCH_RESULT(content_id);
 CREATE INDEX idx_interaction_user_id ON INTERACTION(user_id);
 CREATE INDEX idx_interaction_content_id ON INTERACTION(content_id);
-CREATE INDEX idx_post_embedding_post_id ON POST_EMBEDDING(post_id);
-CREATE INDEX idx_post_embedding_vector ON POST_EMBEDDING USING hnsw (embedding vector_cosine_ops);
+CREATE INDEX idx_content_embedding_content_id ON CONTENT_EMBEDDING(content_id);
+CREATE INDEX idx_content_embedding_vector ON CONTENT_EMBEDDING USING hnsw (embedding vector_cosine_ops);

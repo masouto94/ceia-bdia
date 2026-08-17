@@ -41,3 +41,4 @@ material_desarrollo/
 .python-version
 tp_integrador/pgadmin_data
 tp_integrador/postgres_data
+__pycache__/
