@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Categorías</h1>
+<a class="btn" href="/categories/new">+ Nueva categoría</a>
+<table>
+    <thead>
+        <tr><th>Nombre</th><th>Descripción</th><th>Acciones</th></tr>
+    </thead>
+    <tbody>
+        {% for category in categories %}
+        <tr>
+            <td>{{ category.name }}</td>
+            <td>{{ category.description or "" }}</td>
+            <td class="actions">
+                <a href="/categories/{{ category.id }}/edit">Editar</a>
+                <form class="inline" method="post" action="/categories/{{ category.id }}/delete" onsubmit="return confirm('¿Eliminar categoría?')">
+                    <button class="btn-danger" type="submit">Eliminar</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

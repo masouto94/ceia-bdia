@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>{{ "Editar" if user else "Nuevo" }} usuario</h1>
+<form method="post" action="{{ '/users/' ~ user.id if user else '/users' }}">
+    <label for="username">Username</label>
+    <input type="text" id="username" name="username" value="{{ user.username if user else '' }}" required>
+
+    <label for="email">Email</label>
+    <input type="email" id="email" name="email" value="{{ user.email if user else '' }}" required>
+
+    {% if not user %}
+    <label for="password">Password</label>
+    <input type="password" id="password" name="password" required>
+    {% endif %}
+
+    <button type="submit">Guardar</button>
+</form>
+{% endblock %}

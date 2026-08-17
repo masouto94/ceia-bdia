@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Búsqueda semántica</h1>
+<form class="search-box" method="get" action="/search">
+    <input type="text" name="q" value="{{ query }}" placeholder="Buscar contenido..." autofocus>
+    <button type="submit">Buscar</button>
+</form>
+
+{% if query.strip() %}
+<h2>Resultados para "{{ query }}"</h2>
+{% if results %}
+<table>
+    <thead>
+        <tr><th>Título</th><th>Tipo</th><th>Fuente</th><th>Fragmento</th><th>Similitud</th></tr>
+    </thead>
+    <tbody>
+        {% for result in results %}
+        <tr>
+            <td>{{ result.title }}</td>
+            <td>{{ result.content_type }}</td>
+            <td><span class="chunk-source">{{ result.source_type }}</span></td>
+            <td>{{ result.chunk_text }}</td>
+            <td class="similarity">{{ "%.3f"|format(result.similarity) }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>Sin resultados.</p>
+{% endif %}
+{% endif %}
+{% endblock %}
