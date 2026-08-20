@@ -46,10 +46,12 @@ def new_content_form(request: Request, conn=Depends(get_connection)):
     with conn.cursor() as cur:
         cur.execute("SELECT id, name FROM CATEGORY ORDER BY name")
         categories = cur.fetchall()
+        cur.execute('SELECT id, username FROM "user" ORDER BY username')
+        creators = cur.fetchall()
     return templates.TemplateResponse(
         request,
         "content/form.html",
-        {"content": None, "subtype": None, "categories": categories},
+        {"content": None, "subtype": None, "categories": categories, "creators": creators},
     )
 
 
@@ -58,9 +60,11 @@ def edit_content_form(request: Request, content_id: str, conn=Depends(get_connec
     with conn.cursor() as cur:
         cur.execute("SELECT id, name FROM CATEGORY ORDER BY name")
         categories = cur.fetchall()
+        cur.execute('SELECT id, username FROM "user" ORDER BY username')
+        creators = cur.fetchall()
 
         cur.execute(
-            "SELECT id, title, content_type, category_id FROM CONTENT WHERE id = %s",
+            "SELECT id, title, content_type, category_id, creator_id FROM CONTENT WHERE id = %s",
             (content_id,),
         )
         content = cur.fetchone()
@@ -81,6 +85,7 @@ def edit_content_form(request: Request, content_id: str, conn=Depends(get_connec
             "content": content,
             "subtype": subtype,
             "categories": categories,
+            "creators": creators,
         },
     )
 
@@ -145,11 +150,11 @@ async def create_content(request: Request, conn=Depends(get_connection)):
     with conn.cursor() as cur:
         cur.execute(
             """
-            INSERT INTO CONTENT (title, content_type, category_id)
-            VALUES (%s, %s, %s)
+            INSERT INTO CONTENT (title, creator_id, content_type, category_id)
+            VALUES (%s, %s, %s, %s)
             RETURNING id
             """,
-            (form["title"], form["content_type"], form.get("category_id") or None),
+            (form["title"], form["creator_id"], form["content_type"], form.get("category_id") or None),
         )
         content_id = cur.fetchone()["id"]
         _upsert_subtype(cur, content_id, form["content_type"], form)

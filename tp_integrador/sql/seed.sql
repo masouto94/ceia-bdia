@@ -44,12 +44,12 @@ INSERT INTO PREFERENCE (id, user_id, category_id) VALUES
     (gen_random_uuid(), 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a33', 'c4444444-4444-4444-4444-444444444444'),
     (gen_random_uuid(), 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a44', 'c3333333-3333-3333-3333-333333333333');
 
-INSERT INTO CONTENT (id, category_id, title, content_type, created_at) VALUES
-    ('b1111111-1111-1111-1111-111111111111', 'c2222222-2222-2222-2222-222222222222', 'Tutorial de PostgreSQL 16 desde Cero', 'video', NOW() - INTERVAL '12 days'),
-    ('b2222222-2222-2222-2222-222222222222', 'c1111111-1111-1111-1111-111111111111', 'Introducción a Modelos de Lenguaje LLM', 'article', NOW() - INTERVAL '10 days'),
-    ('b3333333-3333-3333-3333-333333333333', 'c3333333-3333-3333-3333-333333333333', 'Novedades sobre la cursada de BDIA 2026', 'post', NOW() - INTERVAL '8 days'),
-    ('b4444444-4444-4444-4444-444444444444', 'c1111111-1111-1111-1111-111111111111', 'Curso Completo de Data Engineering & IA', 'course', NOW() - INTERVAL '6 days'),
-    ('b5555555-5555-5555-5555-555555555555', 'c2222222-2222-2222-2222-222222222222', 'Especificación del TP Integrador BDIA', 'document', NOW() - INTERVAL '4 days');
+INSERT INTO CONTENT (id, creator_id, category_id, title, content_type, created_at) VALUES
+    ('b1111111-1111-1111-1111-111111111111', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a22', 'c2222222-2222-2222-2222-222222222222', 'Tutorial de PostgreSQL 16 desde Cero', 'video', NOW() - INTERVAL '12 days'),
+    ('b2222222-2222-2222-2222-222222222222', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a22', 'c1111111-1111-1111-1111-111111111111', 'Introducción a Modelos de Lenguaje LLM', 'article', NOW() - INTERVAL '10 days'),
+    ('b3333333-3333-3333-3333-333333333333', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a44', 'c3333333-3333-3333-3333-333333333333', 'Novedades sobre la cursada de BDIA 2026', 'post', NOW() - INTERVAL '8 days'),
+    ('b4444444-4444-4444-4444-444444444444', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a44', 'c1111111-1111-1111-1111-111111111111', 'Curso Completo de Data Engineering & IA', 'course', NOW() - INTERVAL '6 days'),
+    ('b5555555-5555-5555-5555-555555555555', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'c2222222-2222-2222-2222-222222222222', 'Especificación del TP Integrador BDIA', 'document', NOW() - INTERVAL '4 days');
 
 INSERT INTO VIDEO (id, content_id, video_url, duration_seconds) VALUES
     (gen_random_uuid(), 'b1111111-1111-1111-1111-111111111111', 'https://youtube.com/watch?v=pg_tutorial_16', 3600);
