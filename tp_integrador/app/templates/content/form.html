@@ -16,8 +16,8 @@
     {% endif %}
 
     <label for="category_id">Categoría</label>
-    <select id="category_id" name="category_id">
-        <option value="">-- sin categoría --</option>
+    <select id="category_id" name="category_id" required>
+        <option value="">-- elegir categoría --</option>
         {% for category in categories %}
         <option value="{{ category.id }}" {% if content and content.category_id == category.id %}selected{% endif %}>
             {{ category.name }}

@@ -1,86 +1,182 @@
 erDiagram
-
     ROL {
+        uuid id PK
+        varchar name UK
     }
 
     USUARIO {
+        uuid id PK
+        varchar username UK
+        varchar email UK
+        varchar password_hash
+        timestamp created_at
     }
 
-    PREFERENCIA {
-    }
-
-    HISTORIAL {
-    }
-
-    BUSQUEDA {
-    }
-
-    INTERACCION {
-    }
-
-    CONTENIDO {
+    USUARIO_ROL {
+        uuid user_id PK,FK
+        uuid role_id PK,FK
+        timestamp assigned_at
     }
 
     CATEGORIA {
+        uuid id PK
+        varchar name UK
+        varchar description
     }
 
     ETIQUETA {
+        uuid id PK
+        varchar name UK
+    }
+
+    PREFERENCIA {
+        uuid id PK
+        uuid user_id FK
+        uuid category_id FK
+    }
+
+    CONTENIDO {
+        uuid id PK
+        uuid creator_id FK
+        uuid category_id FK
+        varchar title
+        varchar content_type
+        timestamp created_at
+    }
+
+    CONTENIDO_ETIQUETA {
+        uuid content_id PK,FK
+        uuid tag_id PK,FK
+    }
+
+    HISTORIAL {
+        uuid id PK
+        uuid user_id FK
+        uuid content_id FK
+        timestamp viewed_at
+    }
+
+    BUSQUEDA {
+        uuid id PK
+        uuid user_id FK
+        varchar query_text
+        timestamp searched_at
+    }
+
+    RESULTADO_BUSQUEDA {
+        uuid search_id PK,FK
+        uuid content_id PK,FK
+        int rank_position
+    }
+
+    INTERACCION {
+        uuid id PK
+        uuid user_id FK
+        uuid content_id FK
+        enum interaction_type
+        timestamp created_at
     }
 
     VISUALIZACION {
+        uuid id PK
+        uuid interaction_id FK,UK
+        int duration_seconds
     }
 
     REACCION {
+        uuid id PK
+        uuid interaction_id FK,UK
+        enum reaction_type
     }
 
     COMPARTICION {
+        uuid id PK
+        uuid interaction_id FK,UK
+        varchar platform
     }
 
     DENUNCIA {
+        uuid id PK
+        uuid interaction_id FK,UK
+        varchar description
+        enum reason
+        enum status
     }
 
     GESTION {
+        uuid id PK
+        uuid interaction_id FK,UK
+        enum action_type
     }
 
     VIDEO {
+        uuid id PK
+        uuid content_id FK,UK
+        varchar video_url
+        int duration_seconds
     }
 
     ARTICULO {
+        uuid id PK
+        uuid content_id FK,UK
+        varchar author
+        text full_text
     }
 
     PUBLICACION {
+        uuid id PK
+        uuid content_id FK,UK
+        boolean is_pinned
+        text body
     }
 
     CURSO {
+        uuid id PK
+        uuid content_id FK,UK
+        varchar description
+        int total_modules
     }
 
     DOCUMENTO {
+        uuid id PK
+        uuid content_id FK,UK
+        varchar file_format
+        int file_size_kb
     }
 
-    ROL ||--o{ USUARIO : tiene
+    CONTENIDO_EMBEDDING {
+        uuid id PK
+        uuid content_id FK
+        enum source_type
+        int chunk_index
+        text chunk_text
+        vector embedding
+        timestamp created_at
+    }
 
-    USUARIO ||--o{ PREFERENCIA : posee
-    USUARIO ||--o{ HISTORIAL : posee
-    USUARIO ||--o{ BUSQUEDA : realiza
-    USUARIO ||--o{ INTERACCION : realiza
-
+    ROL ||--o{ USUARIO_ROL : asigna
+    USUARIO ||--o{ USUARIO_ROL : posee
+    USUARIO ||--o{ PREFERENCIA : declara
+    CATEGORIA ||--o{ PREFERENCIA : selecciona
+    USUARIO ||--o{ CONTENIDO : crea
+    CATEGORIA ||--o{ CONTENIDO : clasifica
+    USUARIO ||--o{ HISTORIAL : registra
     CONTENIDO ||--o{ HISTORIAL : aparece_en
-    CONTENIDO ||--o{ BUSQUEDA : resultado
+    USUARIO ||--o{ BUSQUEDA : realiza
+    BUSQUEDA ||--o{ RESULTADO_BUSQUEDA : produce
+    CONTENIDO ||--o{ RESULTADO_BUSQUEDA : aparece_en
+    USUARIO ||--o{ INTERACCION : realiza
     CONTENIDO ||--o{ INTERACCION : recibe
-
-    CONTENIDO }o--o{ CATEGORIA : clasificado_en
-    CONTENIDO }o--o{ ETIQUETA : etiquetado_con
-
-    PREFERENCIA }o--o{ CATEGORIA : preferencia
-
-    INTERACCION ||--|| VISUALIZACION : extends
-    INTERACCION ||--|| REACCION : extends
-    INTERACCION ||--|| COMPARTICION : extends
-    INTERACCION ||--|| DENUNCIA : extends
-    INTERACCION ||--|| GESTION : extends
-
-    CONTENIDO ||--|| VIDEO : extends
-    CONTENIDO ||--|| ARTICULO : extends
-    CONTENIDO ||--|| PUBLICACION : extends
-    CONTENIDO ||--|| CURSO : extends
-    CONTENIDO ||--|| DOCUMENTO : extends
+    INTERACCION ||--o| VISUALIZACION : especializa
+    INTERACCION ||--o| REACCION : especializa
+    INTERACCION ||--o| COMPARTICION : especializa
+    INTERACCION ||--o| DENUNCIA : especializa
+    INTERACCION ||--o| GESTION : especializa
+    CONTENIDO ||--o{ CONTENIDO_ETIQUETA : posee
+    ETIQUETA ||--o{ CONTENIDO_ETIQUETA : asigna
+    CONTENIDO ||--o| VIDEO : especializa
+    CONTENIDO ||--o| ARTICULO : especializa
+    CONTENIDO ||--o| PUBLICACION : especializa
+    CONTENIDO ||--o| CURSO : especializa
+    CONTENIDO ||--o| DOCUMENTO : especializa
+    CONTENIDO ||--o{ CONTENIDO_EMBEDDING : vectoriza
