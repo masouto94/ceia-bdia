@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}TP Integrador BDIA{% endblock %}</title>
+    <style>
+        body { font-family: system-ui, sans-serif; max-width: 960px; margin: 2rem auto; padding: 0 1rem; color: #1a1a1a; }
+        nav { display: flex; gap: 1rem; margin-bottom: 2rem; border-bottom: 1px solid #ddd; padding-bottom: 1rem; }
+        nav a { text-decoration: none; color: #2563eb; font-weight: 600; }
+        table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+        th, td { text-align: left; padding: 0.5rem; border-bottom: 1px solid #eee; }
+        form.inline { display: inline; }
+        label { display: block; margin-top: 1rem; font-weight: 600; }
+        input, textarea, select { width: 100%; padding: 0.4rem; margin-top: 0.25rem; box-sizing: border-box; }
+        textarea { min-height: 6rem; }
+        button, .btn { margin-top: 1rem; padding: 0.5rem 1rem; cursor: pointer; }
+        .btn-danger { color: #b91c1c; background: none; border: 1px solid #b91c1c; }
+        .actions a, .actions button { margin-right: 0.5rem; }
+        .similarity { color: #6b7280; font-size: 0.9em; }
+        .search-box { display: flex; gap: 0.5rem; }
+        .search-box input { flex: 1; }
+        .chunk-source { display: inline-block; background: #eef2ff; color: #3730a3; font-size: 0.8em; padding: 0.1rem 0.5rem; border-radius: 0.5rem; }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="/">Inicio</a>
+        <a href="/categories">Categorías</a>
+        <a href="/tags">Tags</a>
+        <a href="/users">Usuarios</a>
+        <a href="/content">Contenido</a>
+        <a href="/search">Búsqueda</a>
+    </nav>
+    {% block content %}{% endblock %}
+</body>
+</html>

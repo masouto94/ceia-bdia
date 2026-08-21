@@ -57,8 +57,8 @@ INSERT INTO VIDEO (id, content_id, video_url, duration_seconds) VALUES
 INSERT INTO ARTICLE (id, content_id, author, full_text) VALUES
     (gen_random_uuid(), 'b2222222-2222-2222-2222-222222222222', 'Alice Smith', 'Los modelos de lenguaje de gran escala (LLM) han revolucionado el procesamiento de lenguaje natural...');
 
-INSERT INTO POST (id, content_id, is_pinned) VALUES
-    (gen_random_uuid(), 'b3333333-3333-3333-3333-333333333333', TRUE);
+INSERT INTO POST (id, content_id, is_pinned, body) VALUES
+    (gen_random_uuid(), 'b3333333-3333-3333-3333-333333333333', TRUE, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus tincidunt aliquam magna, ut consectetur ipsum tempus at. In lacus magna, pretium eget nulla non, condimentum ultricies nibh. Nullam eu ex tortor. Quisque rutrum maximus quam, quis fringilla ex accumsan semper.');
 
 INSERT INTO COURSE (id, content_id, description, total_modules) VALUES
     (gen_random_uuid(), 'b4444444-4444-4444-4444-444444444444', 'Curso intensivo sobre diseño de bases de datos, procesamiento masivo e inteligencia artificial.', 12);

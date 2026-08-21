@@ -1,0 +1,13 @@
+experimento_id,nombre,dataset_id,modelo_id,equipo_id,fecha
+EX01,Experimento lluvia v1,DS01,MD01,EQ03,2026-01-18
+EX02,Experimento lluvia v2,DS07,MD01,EQ03,2026-02-20
+EX03,Experimento cultivos v1,DS02,MD05,EQ03,2026-01-22
+EX04,Experimento demanda v1,DS03,MD04,EQ03,2026-01-25
+EX05,Experimento demanda v2,DS03,MD04,EQ03,2026-03-12
+EX06,Experimento fraude v1,DS05,MD02,EQ03,2026-01-28
+EX07,Experimento fraude v2,DS05,MD02,EQ03,2026-02-15
+EX08,Experimento tickets v1,DS06,MD03,EQ03,2026-02-02
+EX09,Experimento tickets v2,DS06,MD03,EQ03,2026-03-08
+EX10,Experimento clima v1,DS07,MD06,EQ03,2026-02-10
+EX11,Experimento ventas v1,DS03,,EQ05,2026-04-01
+EX12,Experimento sentimiento v1,DS08,,EQ03,2026-04-05

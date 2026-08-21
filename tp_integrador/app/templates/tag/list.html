@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Tags</h1>
+<a class="btn" href="/tags/new">+ Nuevo tag</a>
+<table>
+    <thead>
+        <tr><th>Nombre</th><th>Acciones</th></tr>
+    </thead>
+    <tbody>
+        {% for tag in tags %}
+        <tr>
+            <td>{{ tag.name }}</td>
+            <td class="actions">
+                <a href="/tags/{{ tag.id }}/edit">Editar</a>
+                <form class="inline" method="post" action="/tags/{{ tag.id }}/delete" onsubmit="return confirm('¿Eliminar tag?')">
+                    <button class="btn-danger" type="submit">Eliminar</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

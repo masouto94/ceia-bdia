@@ -37,5 +37,8 @@ exports/
 # Material de desarrollo de las clases
 material_desarrollo/
 
+.venv/
+.python-version
 tp_integrador/pgadmin_data
 tp_integrador/postgres_data
+__pycache__/

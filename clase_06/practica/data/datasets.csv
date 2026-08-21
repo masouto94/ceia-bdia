@@ -1,0 +1,9 @@
+dataset_id,nombre,equipo_id,fuente_detalle,cantidad_registros_aprox,fecha_creacion
+DS01,Sensores ambientales,EQ03,IoT,15000,2026-01-05
+DS02,Imagenes de cultivos,EQ03,Vision computacional,5000,2026-01-05
+DS03,Historico de ventas,EQ05,Sistema transaccional,25000,2026-01-06
+DS04,Sensores industriales,EQ03,IoT industrial,42000,2026-01-08
+DS05,Transacciones bancarias,EQ06,Sistema financiero,120000,2026-01-10
+DS06,Tickets de soporte,EQ05,Mesa de ayuda,18000,2026-01-12
+DS07,Clima historico regional,EQ03,Servicio meteorologico,65000,2026-01-14
+DS08,Comentarios de usuarios,EQ05,Aplicacion web,8000,2026-01-15

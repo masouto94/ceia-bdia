@@ -1,0 +1,7 @@
+equipo_id,nombre,area,descripcion_breve
+EQ01,Infraestructura y Plataforma,Plataforma,Administra el warehouse operativo, el data lake y los componentes de computo on-premise y cloud.
+EQ02,Ingenieria de Datos,Datos,Disena y mantiene los procesos de integracion, ETL/ELT y las capas Bronce, Plata y Oro.
+EQ03,Ciencia de Datos e IA,Investigacion,Disena datasets, entrena modelos y ejecuta experimentos sobre la plataforma.
+EQ04,Gobierno de Datos y Calidad,Gobierno,Define metadatos, politicas de calidad, trazabilidad y catalogacion del dato.
+EQ05,Analitica de Negocio (BI),Analitica,Construye reportes, tableros e indicadores a partir del warehouse analitico.
+EQ06,Seguridad y Cumplimiento,Seguridad,Evalua riesgos, confidencialidad y restricciones normativas sobre datos sensibles.
