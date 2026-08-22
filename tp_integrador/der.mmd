@@ -116,6 +116,12 @@ erDiagram
         int duration_seconds
     }
 
+    PHOTO {
+        uuid id PK
+        uuid content_id FK
+        varchar photo_url
+    }
+
     ARTICLE {
         uuid id PK
         uuid content_id FK
@@ -171,6 +177,7 @@ erDiagram
     INTERACTION ||--o| MANAGEMENT : "specializes as"
 
     CONTENT ||--o| VIDEO : "specializes as"
+    CONTENT ||--o| PHOTO : "specializes as"
     CONTENT ||--o| ARTICLE : "specializes as"
     CONTENT ||--o| POST : "specializes as"
     CONTENT ||--o| COURSE : "specializes as"

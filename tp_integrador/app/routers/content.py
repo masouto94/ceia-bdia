@@ -11,6 +11,7 @@ templates = Jinja2Templates(directory="app/templates")
 
 SUBTYPE_TABLES = {
     "video": "VIDEO",
+    "photo": "PHOTO",
     "article": "ARTICLE",
     "post": "POST",
     "course": "COURSE",
@@ -100,6 +101,16 @@ def _upsert_subtype(cur, content_id, content_type, form):
             SET video_url = EXCLUDED.video_url, duration_seconds = EXCLUDED.duration_seconds
             """,
             (content_id, form["video_url"], int(form["duration_seconds"])),
+        )
+    elif content_type == "photo":
+        cur.execute(
+            """
+            INSERT INTO PHOTO (content_id, photo_url)
+            VALUES (%s, %s)
+            ON CONFLICT (content_id) DO UPDATE
+            SET photo_url = EXCLUDED.photo_url
+            """,
+            (content_id, form["photo_url"]),
         )
     elif content_type == "article":
         cur.execute(

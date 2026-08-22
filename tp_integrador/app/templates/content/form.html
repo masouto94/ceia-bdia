@@ -28,7 +28,7 @@
     <label for="content_type">Tipo</label>
     <select id="content_type" name="{{ 'content_type_display' if content else 'content_type' }}" onchange="showSubtypeFields()" {% if content %}disabled{% endif %} required>
         <option value="">-- elegir --</option>
-        {% for value in ["video", "article", "post", "course", "document"] %}
+        {% for value in ["video", "foto", "article", "post", "course", "document"] %}
         <option value="{{ value }}" {% if content and content.content_type == value %}selected{% endif %}>{{ value }}</option>
         {% endfor %}
     </select>
@@ -41,6 +41,11 @@
         <input type="text" id="video_url" name="video_url" value="{{ subtype.video_url if subtype else '' }}">
         <label for="video_duration_seconds">Duración (segundos)</label>
         <input type="number" id="video_duration_seconds" name="duration_seconds" value="{{ subtype.duration_seconds if subtype else '' }}">
+    </fieldset>
+
+    <fieldset id="fields-foto" class="subtype-fields">
+        <label for="photo_url">URL de la foto</label>
+        <input type="text" id="photo_url" name="photo_url" value="{{ subtype.photo_url if subtype else '' }}">
     </fieldset>
 
     <fieldset id="fields-article" class="subtype-fields">

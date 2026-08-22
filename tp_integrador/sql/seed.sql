@@ -49,10 +49,14 @@ INSERT INTO CONTENT (id, creator_id, category_id, title, content_type, created_a
     ('b2222222-2222-2222-2222-222222222222', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a22', 'c1111111-1111-1111-1111-111111111111', 'Introducción a Modelos de Lenguaje LLM', 'article', NOW() - INTERVAL '10 days'),
     ('b3333333-3333-3333-3333-333333333333', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a44', 'c3333333-3333-3333-3333-333333333333', 'Novedades sobre la cursada de BDIA 2026', 'post', NOW() - INTERVAL '8 days'),
     ('b4444444-4444-4444-4444-444444444444', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a44', 'c1111111-1111-1111-1111-111111111111', 'Curso Completo de Data Engineering & IA', 'course', NOW() - INTERVAL '6 days'),
-    ('b5555555-5555-5555-5555-555555555555', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'c2222222-2222-2222-2222-222222222222', 'Especificación del TP Integrador BDIA', 'document', NOW() - INTERVAL '4 days');
+    ('b5555555-5555-5555-5555-555555555555', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'c2222222-2222-2222-2222-222222222222', 'Especificación del TP Integrador BDIA', 'document', NOW() - INTERVAL '4 days'),
+    ('b6666666-6666-6666-6666-666666666666', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a55', 'c4444444-4444-4444-4444-444444444444', 'Infraestructura y Despliegue en la Nube', 'foto', NOW() - INTERVAL '2 days');
 
 INSERT INTO VIDEO (id, content_id, video_url, duration_seconds) VALUES
-    (gen_random_uuid(), 'b1111111-1111-1111-1111-111111111111', 'https://youtube.com/watch?v=pg_tutorial_16', 3600);
+    (gen_random_uuid(), 'b1111111-1111-1111-1111-111111111111', 'http://localhost:9000/assets/tutorial_pg16.mp4', 3600);
+
+INSERT INTO FOTO (id, content_id, photo_url) VALUES
+    (gen_random_uuid(), 'b6666666-6666-6666-6666-666666666666', 'http://localhost:9000/assets/infraestructura_cloud.png');
 
 INSERT INTO ARTICLE (id, content_id, author, full_text) VALUES
     (gen_random_uuid(), 'b2222222-2222-2222-2222-222222222222', 'Alice Smith', 'Los modelos de lenguaje de gran escala (LLM) han revolucionado el procesamiento de lenguaje natural...');
@@ -67,7 +71,14 @@ INSERT INTO DOCUMENT (id, content_id, file_format, file_size_kb) VALUES
     (gen_random_uuid(), 'b5555555-5555-5555-5555-555555555555', 'PDF', 2048);
 
 INSERT INTO CONTENT_TAG (content_id, tag_id) VALUES
-    ('b1111111-1111-1111-1111-111111111111', 'd1111111-1111-1111-1111-111111111111'),     ('b1111111-1111-1111-1111-111111111111', 'd5555555-5555-5555-5555-555555555555'),     ('b2222222-2222-2222-2222-222222222222', 'd2222222-2222-2222-2222-222222222222'),     ('b2222222-2222-2222-2222-222222222222', 'd7777777-7777-7777-7777-777777777777'),     ('b4444444-4444-4444-4444-444444444444', 'd4444444-4444-4444-4444-444444444444'),     ('b5555555-5555-5555-5555-555555555555', 'd1111111-1111-1111-1111-111111111111'); 
+    ('b1111111-1111-1111-1111-111111111111', 'd1111111-1111-1111-1111-111111111111'),     
+    ('b1111111-1111-1111-1111-111111111111', 'd5555555-5555-5555-5555-555555555555'),     
+    ('b2222222-2222-2222-2222-222222222222', 'd2222222-2222-2222-2222-222222222222'),     
+    ('b2222222-2222-2222-2222-222222222222', 'd7777777-7777-7777-7777-777777777777'),     
+    ('b4444444-4444-4444-4444-444444444444', 'd4444444-4444-4444-4444-444444444444'),     
+    ('b5555555-5555-5555-5555-555555555555', 'd1111111-1111-1111-1111-111111111111'),
+    ('b6666666-6666-6666-6666-666666666666', 'd3333333-3333-3333-3333-333333333333'); 
+
 INSERT INTO HISTORY (id, user_id, content_id, viewed_at) VALUES
     (gen_random_uuid(), 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a22', 'b1111111-1111-1111-1111-111111111111', NOW() - INTERVAL '5 days'),
     (gen_random_uuid(), 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a22', 'b2222222-2222-2222-2222-222222222222', NOW() - INTERVAL '3 days'),
