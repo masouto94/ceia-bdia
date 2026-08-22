@@ -18,8 +18,9 @@ La implementacion es una prueba academica basica. Incluye el modelo relacional, 
 
 - PostgreSQL 16 como base relacional.
 - pgvector para embeddings y similitud coseno.
+- MinIO para el almacenamiento de archivos.
 - FastAPI para la aplicacion.
-- Docker Compose para ejecutar PostgreSQL y pgvector.
+- Docker Compose para ejecutar PostgreSQL, pgvector y MinIO.
 - `all-MiniLM-L6-v2` para generar vectores de 384 dimensiones.
 
 Se descartan bases NoSQL y una base vectorial independiente para mantener una unica solucion simple y consistente.
@@ -44,22 +45,33 @@ Se descartan bases NoSQL y una base vectorial independiente para mantener una un
 - `data/ejemplos/`: ejemplos representativos.
 - `embeddings/`: generacion y carga de embeddings.
 - `app/`: aplicacion FastAPI.
-- `docker-compose.yml`: servicios de PostgreSQL y pgAdmin.
+- `docker-compose.yml`: servicios de PostgreSQL, pgAdmin y MinIO.
+- `data/`: archivos binarios de ejemplo (foto y video) para cargar en MinIO.
 
 ## Ejecucion
 
-Desde `tp_integrador`:
+Desde `tp_integrador`, usar el script de inicializacion:
 
 ```bash
-docker compose up -d
+./setup.sh
 ```
 
-La primera inicializacion ejecuta `sql/ddl.sql` y `sql/seed.sql`. Para reinicializar una base local, deben eliminarse los volumenes o directorios de datos creados por Docker y volver a levantar los servicios.
+Este script detiene y reinicia los contenedores (PostgreSQL, pgAdmin y MinIO), ejecuta `sql/ddl.sql` y `sql/seed.sql` en la primera inicializacion, espera a que MinIO este disponible y sube los archivos binarios de ejemplo al bucket `assets` usando `docker run minio/mc`. Para eliminar todos los datos incluyendo MinIO:
+
+```bash
+./setup.sh --purge
+```
 
 Para ejecutar la aplicacion, configurar `.env` a partir de `.env.example` y utilizar el entorno Python del proyecto:
 
 ```bash
 uv run --project .. uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
+```
+
+Alternativamente, usar el script combinado:
+
+```bash
+./setup.sh && ./run_app.sh
 ```
 
 Para cargar embeddings, con PostgreSQL disponible (ejecutar como modulo, no como script directo):
@@ -86,6 +98,7 @@ El archivo `sql/consultas.sql` incluye:
 - Las etiquetas, roles y resultados de busqueda se resuelven mediante tablas intermedias.
 - Los atributos especificos se separan en tablas por tipo de contenido.
 - Las interacciones comunes se almacenan en `INTERACTION` y sus detalles en tablas especializadas.
+- Los archivos binarios (fotos y videos) se almacenan en MinIO (S3-compatible); la base relacional almacena solo la URL de referencia, manteniendo separacion entre datos estructurados y no estructurados.
 - Los embeddings son datos derivados y permanecen vinculados al contenido original mediante `content_id`.
 
 ## Limitaciones y mejoras

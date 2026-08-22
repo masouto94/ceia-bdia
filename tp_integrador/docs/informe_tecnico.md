@@ -34,11 +34,11 @@ El modelo relacional se organiza hasta 3FN. Se separan catalogos, entidades y re
 
 ## 7. Tecnologia
 
-Se eligio PostgreSQL por sus relaciones, integridad referencial, restricciones e idoneidad para consultas SQL. pgvector permite guardar embeddings junto con los datos originales. FastAPI ofrece una interfaz simple y Docker Compose facilita la ejecucion. Se descartaron bases NoSQL y vectoriales independientes por simplicidad y volumen reducido.
+Se eligio PostgreSQL por sus relaciones, integridad referencial, restricciones e idoneidad para consultas SQL. pgvector permite guardar embeddings junto con los datos originales. MinIO provee almacenamiento de objetos S3-compatible para archivos binarios como fotos y videos, desacoplando los binarios del motor relacional. FastAPI ofrece una interfaz simple y Docker Compose facilita la ejecucion. Se descartaron bases NoSQL y vectoriales independientes por simplicidad y volumen reducido.
 
 ## 8. Implementacion minima
 
-`sql/ddl.sql` crea extensiones, tipos enumerados, tablas e indices. `sql/seed.sql` inserta datos de prueba. La aplicacion FastAPI permite gestionar usuarios, categorias, etiquetas y contenidos. El proceso de embeddings genera vectores y los guarda en `CONTENT_EMBEDDING`.
+`sql/ddl.sql` crea extensiones, tipos enumerados, tablas e indices. `sql/seed.sql` inserta datos de prueba. La aplicacion FastAPI permite gestionar usuarios, categorias, etiquetas y contenidos. El proceso de embeddings genera vectores y los guarda en `CONTENT_EMBEDDING`. Los archivos binarios de ejemplo (foto y video) se cargan en MinIO mediante `setup.sh`, que usa `docker run minio/mc` sin requerir instalacion adicional.
 
 ## 9. Datos de ejemplo
 
@@ -50,11 +50,11 @@ Los datos permiten validar usuarios, categorias, etiquetas, contenidos especiali
 
 ## 11. Datos semiestructurados y vectoriales
 
-Los atributos variables se modelan mediante tablas especializadas. Los textos se dividen en fragmentos y se convierten en vectores de 384 dimensiones. Cada vector conserva `content_id`, origen, posicion, texto y fecha. La representacion vectorial no reemplaza los datos originales y debe actualizarse cuando cambia el contenido.
+Los atributos variables se modelan mediante tablas especializadas. Los textos se dividen en fragmentos y se convierten en vectores de 384 dimensiones. Cada vector conserva `content_id`, origen, posicion, texto y fecha. La representacion vectorial no reemplaza los datos originales y debe actualizarse cuando cambia el contenido. Los archivos binarios (fotos y videos) se almacenan en MinIO; la base relacional conserva solo la URL de referencia en las tablas `PHOTO` y `VIDEO`, manteniendo la separacion entre datos estructurados y no estructurados.
 
 ## 12. Arquitectura
 
-La arquitectura simple se documenta en `docs/arquitectura.md`. FastAPI recibe datos, PostgreSQL conserva el almacenamiento operacional y pgvector resuelve similitud. El proceso Python prepara datos para IA. No se incorpora un Data Warehouse ni un Data Lake por el alcance academico.
+La arquitectura simple se documenta en `docs/arquitectura.md`. FastAPI recibe datos, PostgreSQL conserva el almacenamiento operacional, MinIO almacena los binarios y pgvector resuelve similitud. El proceso Python prepara datos para IA. No se incorpora un Data Warehouse ni un Data Lake por el alcance academico.
 
 ## 13. Seguridad
 
@@ -78,4 +78,4 @@ Si aumentaran los datos o usuarios, se podrian aplicar estas estrategias: partic
 
 ## 15. Conclusiones
 
-PostgreSQL con pgvector permite resolver el caso con una arquitectura compacta, consistente y suficientemente expresiva. El modelo distingue datos operacionales, textos y representaciones vectoriales, y deja documentadas las extensiones necesarias para una plataforma de mayor escala.
+PostgreSQL con pgvector permite resolver el caso con una arquitectura compacta, consistente y suficientemente expresiva. MinIO desacopla el almacenamiento de binarios del motor relacional, siguiendo el patron habitual de separar datos estructurados y archivos. El modelo distingue datos operacionales, textos y representaciones vectoriales, y deja documentadas las extensiones necesarias para una plataforma de mayor escala.

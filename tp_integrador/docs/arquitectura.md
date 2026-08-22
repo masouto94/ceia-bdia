@@ -2,7 +2,7 @@
 
 ## Alcance
 
-La solucion utiliza una arquitectura simple de capas. Se mantiene PostgreSQL como almacenamiento principal y se incorpora pgvector dentro del mismo motor para resolver busquedas semanticas. No se agrega un Data Warehouse, Data Lake ni una base vectorial independiente porque el volumen y el alcance del trabajo son academicos.
+La solucion utiliza una arquitectura simple de capas. Se mantiene PostgreSQL como almacenamiento principal y se incorpora pgvector dentro del mismo motor para resolver busquedas semanticas. MinIO se agrega como almacenamiento de objetos S3-compatible para archivos binarios (fotos y videos), separando los datos no estructurados del motor relacional. No se agrega un Data Warehouse, Data Lake ni una base vectorial independiente porque el volumen y el alcance del trabajo son academicos.
 
 ## Flujo general
 
@@ -13,6 +13,7 @@ flowchart LR
     A --> O[PostgreSQL operacional]
     O --> T[Contenidos y metadatos]
     O --> E[Eventos e interacciones]
+    A --> M[MinIO: fotos y videos]
     T --> P[Proceso de generacion de embeddings]
     P --> V[pgvector: CONTENT_EMBEDDING]
     U --> Q[Consulta textual]
@@ -48,6 +49,10 @@ PostgreSQL almacena:
 
 Las relaciones se mantienen mediante claves primarias, claves foraneas y restricciones de integridad.
 
+### Almacenamiento de objetos
+
+MinIO almacena los archivos binarios subidos al sistema (fotos y videos). La base relacional conserva solo la URL de referencia en las tablas `PHOTO` y `VIDEO`. La aplicacion FastAPI sirve el contenido binario a traves de endpoints dedicados (`/content/{id}/photo`, `/content/{id}/video`) que recuperan el objeto desde MinIO y lo transmiten al cliente.
+
 ### Preparacion para IA
 
 Un proceso en Python lee los textos disponibles de los contenidos, los divide en fragmentos y genera embeddings con `all-MiniLM-L6-v2`. Los vectores se guardan en `CONTENT_EMBEDDING`, vinculados mediante `content_id` al contenido original.
@@ -58,10 +63,10 @@ La aplicacion ejecuta consultas SQL convencionales para recuperar contenidos y c
 
 ## Datos crudos, procesados y preparados para IA
 
-- **Datos ingresados:** titulos, textos, descripciones, categorias, etiquetas y eventos de interaccion.
+- **Datos ingresados:** titulos, textos, descripciones, categorias, etiquetas, eventos de interaccion y archivos binarios (fotos y videos).
 - **Datos procesados:** fragmentos de texto y metricas obtenidas mediante consultas SQL.
 - **Datos preparados para IA:** embeddings almacenados en `CONTENT_EMBEDDING`.
-- **Datos consumidos:** listados de contenidos, resultados de busqueda y posibles recomendaciones.
+- **Datos consumidos:** listados de contenidos, resultados de busqueda, archivos binarios servidos desde MinIO y posibles recomendaciones.
 
 En el alcance actual no se implementa un almacenamiento separado para cada etapa. Las tablas operacionales y vectoriales se mantienen en PostgreSQL para reducir complejidad.
 
@@ -86,4 +91,5 @@ Si aumentaran los usuarios, contenidos o consultas, se podrian incorporar:
 - cache para contenidos y recomendaciones frecuentes;
 - particionamiento de tablas de eventos como `HISTORY` e `INTERACTION`;
 - replicas de lectura para distribuir consultas;
-- un servicio vectorial separado si pgvector dejara de ser suficiente.
+- un servicio vectorial separado si pgvector dejara de ser suficiente;
+- un CDN o bucket publico para servir archivos binarios a escala, reemplazando el proxy actual por FastAPI.
