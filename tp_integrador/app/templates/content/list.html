@@ -4,12 +4,25 @@
 <a class="btn" href="/content/new">+ Nuevo contenido</a>
 <table>
     <thead>
-        <tr><th>Título</th><th>Tipo</th><th>Categoría</th><th>Acciones</th></tr>
+        <tr><th style="width: 70px;">Vista</th><th>Título</th><th>Tipo</th><th>Categoría</th><th>Acciones</th></tr>
     </thead>
     <tbody>
         {% for item in items %}
         <tr>
-            <td>{{ item.title }}</td>
+            <td style="text-align: center; vertical-align: middle;">
+                {% if item.content_type == 'photo' and item.photo_url %}
+                <a href="/content/{{ item.id }}/photo" target="_blank" title="Ver foto">
+                    <img src="/content/{{ item.id }}/photo" alt="{{ item.title }}" style="width: 50px; height: 38px; object-fit: cover; border-radius: 4px; border: 1px solid #ccc; display: inline-block; vertical-align: middle;">
+                </a>
+                {% elif item.content_type == 'video' and item.video_url %}
+                <a href="/content/{{ item.id }}/video" target="_blank" title="Ver video" style="display: inline-block; font-size: 1.25rem; text-decoration: none;">
+                    🎬
+                </a>
+                {% else %}
+                <span style="color: #bbb; font-size: 0.8em;">—</span>
+                {% endif %}
+            </td>
+            <td><strong>{{ item.title }}</strong></td>
             <td>{{ item.content_type }}</td>
             <td>{{ item.category_name or "" }}</td>
             <td class="actions">
