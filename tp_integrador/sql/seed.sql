@@ -55,8 +55,8 @@ INSERT INTO CONTENT (id, creator_id, category_id, title, content_type, created_a
 INSERT INTO VIDEO (id, content_id, video_url, duration_seconds) VALUES
     (gen_random_uuid(), 'b1111111-1111-1111-1111-111111111111', 'http://localhost:9000/assets/tutorial_pg16.mp4', 3600);
 
-INSERT INTO FOTO (id, content_id, photo_url) VALUES
-    (gen_random_uuid(), 'b6666666-6666-6666-6666-666666666666', 'http://localhost:9000/assets/infraestructura_cloud.png');
+INSERT INTO PHOTO (id, content_id, photo_url, height, width) VALUES
+    (gen_random_uuid(), 'b6666666-6666-6666-6666-666666666666', 'http://localhost:9000/assets/infraestructura_cloud.png', 1080, 1920);
 
 INSERT INTO ARTICLE (id, content_id, author, full_text) VALUES
     (gen_random_uuid(), 'b2222222-2222-2222-2222-222222222222', 'Alice Smith', 'Los modelos de lenguaje de gran escala (LLM) han revolucionado el procesamiento de lenguaje natural...');

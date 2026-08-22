@@ -105,12 +105,12 @@ def _upsert_subtype(cur, content_id, content_type, form):
     elif content_type == "photo":
         cur.execute(
             """
-            INSERT INTO PHOTO (content_id, photo_url)
-            VALUES (%s, %s)
+            INSERT INTO PHOTO (content_id, photo_url, height, width)
+            VALUES (%s, %s, %s, %s)
             ON CONFLICT (content_id) DO UPDATE
-            SET photo_url = EXCLUDED.photo_url
+            SET photo_url = EXCLUDED.photo_url, height = EXCLUDED.height, width = EXCLUDED.width
             """,
-            (content_id, form["photo_url"]),
+            (content_id, form["photo_url"], int(form["height"]), int(form["width"])),
         )
     elif content_type == "article":
         cur.execute(
