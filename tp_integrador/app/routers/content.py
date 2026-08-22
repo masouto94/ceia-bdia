@@ -28,7 +28,7 @@ SUBTYPE_TABLES = {
 
 MINIO_ENDPOINT = os.environ.get("MINIO_ENDPOINT", "localhost:9000")
 MINIO_ROOT_USER = os.environ.get("MINIO_ROOT_USER", "admin")
-MINIO_ROOT_PASSWORD = os.environ.get("MINIO_ROOT_PASSWORD", "12345")
+MINIO_ROOT_PASSWORD = os.environ.get("MINIO_ROOT_PASSWORD", "12345678")
 MINIO_BUCKET = os.environ.get("MINIO_BUCKET", "assets")
 
 
