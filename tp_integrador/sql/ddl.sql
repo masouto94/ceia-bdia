@@ -4,6 +4,15 @@ SET search_path TO public;
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 CREATE EXTENSION IF NOT EXISTS "vector";
 
+CREATE TYPE content_type_enum AS ENUM (
+    'video',
+    'photo',
+    'article',
+    'post',
+    'course',
+    'document'
+    );
+
 CREATE TYPE interaction_type_enum AS ENUM (
     'view',
     'reaction',
@@ -82,7 +91,8 @@ CREATE TABLE TAG (
 CREATE TABLE PREFERENCE (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID NOT NULL REFERENCES "user"(id) ON DELETE CASCADE,
-    category_id UUID NOT NULL REFERENCES CATEGORY(id) ON DELETE CASCADE
+    category_id UUID NOT NULL REFERENCES CATEGORY(id) ON DELETE CASCADE,
+    UNIQUE (user_id, category_id)
 );
 
 CREATE TABLE CONTENT (
@@ -90,8 +100,11 @@ CREATE TABLE CONTENT (
     creator_id UUID NOT NULL REFERENCES "user"(id) ON DELETE RESTRICT,
     category_id UUID NOT NULL REFERENCES CATEGORY(id) ON DELETE RESTRICT,
     title VARCHAR(255) NOT NULL,
-    content_type VARCHAR(50) NOT NULL,
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+    content_type content_type_enum NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    -- Permite que cada tabla de subtipo referencie el par (id, content_type)
+    -- y garantice asi que su fila corresponda al tipo declarado en CONTENT.
+    UNIQUE (id, content_type)
 );
 
 CREATE TABLE CONTENT_TAG (
@@ -163,47 +176,71 @@ CREATE TABLE MANAGEMENT (
 
 CREATE TABLE VIDEO (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    content_id UUID NOT NULL UNIQUE REFERENCES CONTENT(id) ON DELETE CASCADE,
+    content_id UUID NOT NULL UNIQUE,
+    content_type content_type_enum NOT NULL DEFAULT 'video'
+        CHECK (content_type = 'video'),
     video_url VARCHAR(255) NOT NULL,
     duration_seconds INT NOT NULL,
-    description TEXT
+    description TEXT,
+    FOREIGN KEY (content_id, content_type)
+        REFERENCES CONTENT(id, content_type) ON DELETE CASCADE
 );
 
 CREATE TABLE PHOTO (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    content_id UUID NOT NULL UNIQUE REFERENCES CONTENT(id) ON DELETE CASCADE,
+    content_id UUID NOT NULL UNIQUE,
+    content_type content_type_enum NOT NULL DEFAULT 'photo'
+        CHECK (content_type = 'photo'),
     photo_url VARCHAR(255) NOT NULL,
     height INT NOT NULL,
     width INT NOT NULL,
-    description TEXT
+    description TEXT,
+    FOREIGN KEY (content_id, content_type)
+        REFERENCES CONTENT(id, content_type) ON DELETE CASCADE
 );
 
 CREATE TABLE ARTICLE (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    content_id UUID NOT NULL UNIQUE REFERENCES CONTENT(id) ON DELETE CASCADE,
+    content_id UUID NOT NULL UNIQUE,
+    content_type content_type_enum NOT NULL DEFAULT 'article'
+        CHECK (content_type = 'article'),
     author VARCHAR(100) NOT NULL,
-    full_text TEXT NOT NULL
+    full_text TEXT NOT NULL,
+    FOREIGN KEY (content_id, content_type)
+        REFERENCES CONTENT(id, content_type) ON DELETE CASCADE
 );
 
 CREATE TABLE POST (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    content_id UUID NOT NULL UNIQUE REFERENCES CONTENT(id) ON DELETE CASCADE,
+    content_id UUID NOT NULL UNIQUE,
+    content_type content_type_enum NOT NULL DEFAULT 'post'
+        CHECK (content_type = 'post'),
     is_pinned BOOLEAN NOT NULL DEFAULT FALSE,
-    body TEXT NOT NULL
+    body TEXT NOT NULL,
+    FOREIGN KEY (content_id, content_type)
+        REFERENCES CONTENT(id, content_type) ON DELETE CASCADE
 );
 
 CREATE TABLE COURSE (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    content_id UUID NOT NULL UNIQUE REFERENCES CONTENT(id) ON DELETE CASCADE,
+    content_id UUID NOT NULL UNIQUE,
+    content_type content_type_enum NOT NULL DEFAULT 'course'
+        CHECK (content_type = 'course'),
     description VARCHAR(255),
-    total_modules INT NOT NULL
+    total_modules INT NOT NULL,
+    FOREIGN KEY (content_id, content_type)
+        REFERENCES CONTENT(id, content_type) ON DELETE CASCADE
 );
 
 CREATE TABLE DOCUMENT (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    content_id UUID NOT NULL UNIQUE REFERENCES CONTENT(id) ON DELETE CASCADE,
+    content_id UUID NOT NULL UNIQUE,
+    content_type content_type_enum NOT NULL DEFAULT 'document'
+        CHECK (content_type = 'document'),
     file_format VARCHAR(50) NOT NULL,
-    file_size_kb INT NOT NULL
+    file_size_kb INT NOT NULL,
+    FOREIGN KEY (content_id, content_type)
+        REFERENCES CONTENT(id, content_type) ON DELETE CASCADE
 );
 
 CREATE TABLE CONTENT_EMBEDDING (
