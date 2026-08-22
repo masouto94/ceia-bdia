@@ -215,6 +215,13 @@ CREATE TABLE CONTENT_EMBEDDING (
     UNIQUE (content_id, source_type, chunk_index)
 );
 
+CREATE TABLE USER_PREFERENCE (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID NOT NULL REFERENCES "user"(id) ON DELETE CASCADE,
+    content JSONB NOT NULL DEFAULT '{}'::jsonb,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
 CREATE INDEX idx_user_role_user_id ON USER_ROLE(user_id);
 CREATE INDEX idx_user_role_role_id ON USER_ROLE(role_id);
 CREATE INDEX idx_preference_user_id ON PREFERENCE(user_id);
@@ -232,3 +239,4 @@ CREATE INDEX idx_interaction_user_id ON INTERACTION(user_id);
 CREATE INDEX idx_interaction_content_id ON INTERACTION(content_id);
 CREATE INDEX idx_content_embedding_content_id ON CONTENT_EMBEDDING(content_id);
 CREATE INDEX idx_content_embedding_vector ON CONTENT_EMBEDDING USING hnsw (embedding vector_cosine_ops);
+CREATE INDEX idx_user_preference_user_id ON USER_PREFERENCE(user_id);

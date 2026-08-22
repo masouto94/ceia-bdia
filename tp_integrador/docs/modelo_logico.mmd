@@ -23,6 +23,7 @@ erDiagram
     CURSO
     DOCUMENTO
     CONTENIDO_EMBEDDING
+    AJUSTE
 
     ROL ||--o{ USUARIO_ROL : asigna
     USUARIO ||--o{ USUARIO_ROL : posee
@@ -50,3 +51,4 @@ erDiagram
     CONTENIDO ||--o| CURSO : especializa
     CONTENIDO ||--o| DOCUMENTO : especializa
     CONTENIDO ||--o{ CONTENIDO_EMBEDDING : vectoriza
+    USUARIO ||--o{ AJUSTE : aplica

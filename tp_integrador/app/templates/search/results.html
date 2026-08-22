@@ -1,13 +1,28 @@
 {% extends "base.html" %}
 {% block content %}
 <h1>Búsqueda semántica</h1>
-<form class="search-box" method="get" action="/search">
-    <input type="text" name="q" value="{{ query }}" placeholder="Buscar contenido..." autofocus>
-    <button type="submit">Buscar</button>
+<form class="search-box" method="get" action="/search" style="display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center;">
+    <input type="text" name="q" value="{{ query }}" placeholder="Buscar contenido..." autofocus style="flex: 1; min-width: 200px;">
+    
+    <select name="user_id" style="width: auto; min-width: 180px; padding: 0.4rem;" onchange="this.form.submit()">
+        <option value="">-- Usuario predeterminado (10) --</option>
+        {% for u in users %}
+        <option value="{{ u.id }}" {% if selected_user_id == u.id|string %}selected{% endif %}>
+            👤 {{ u.username }}
+        </option>
+        {% endfor %}
+    </select>
+    
+    <button type="submit" style="margin-top: 0;">Buscar</button>
 </form>
 
 {% if query.strip() %}
-<h2>Resultados para "{{ query }}"</h2>
+<div style="display: flex; justify-content: space-between; align-items: baseline; margin-top: 1rem;">
+    <h2 style="margin: 0;">Resultados para "{{ query }}"</h2>
+    <span style="font-size: 0.85rem; color: #666; background: #f3f4f6; padding: 0.2rem 0.6rem; border-radius: 4px;">
+        Máx. resultados configurados: <strong>{{ max_results }}</strong>
+    </span>
+</div>
 {% if results %}
 <table>
     <thead>

@@ -28,7 +28,12 @@ def get_model():
     return SentenceTransformer("all-MiniLM-L6-v2")
 
 
-def search_content(conn, query_text, limit=10):
+from app.preferences import get_user_max_results
+
+def search_content(conn, query_text: str, user_id: str = None, limit: int = None):
+    if limit is None:
+        limit = get_user_max_results(conn, user_id, default=10) if user_id else 10
+
     model = get_model()
     query_vector = vectorize_chunks(model, [query_text])[0]
 

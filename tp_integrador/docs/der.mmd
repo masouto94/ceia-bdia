@@ -151,6 +151,13 @@ erDiagram
         int file_size_kb
     }
 
+    USER_PREFERENCE {
+        uuid id PK
+        uuid user_id FK
+        jsonb content
+        timestamp created_at
+    }
+
     USER ||--o{ USER_ROLE : "has"
     ROLE ||--o{ USER_ROLE : "assigned to"
 
@@ -158,6 +165,7 @@ erDiagram
     USER ||--o{ HISTORY : "logs"
     USER ||--o{ SEARCH : "performs"
     USER ||--o{ INTERACTION : "initiates"
+    USER ||--o{ USER_PREFERENCE : "configs"
     USER ||--o{ CONTENT : "creates"
 
     CATEGORY ||--o{ PREFERENCE : "selected in"
