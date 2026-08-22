@@ -1,7 +1,15 @@
-from fastapi import APIRouter, Depends, Form, Request
+import io
+import os
+import uuid
+
+from fastapi import APIRouter, Depends, Request
 from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
+from minio import Minio
+from minio.error import S3Error
+from PIL import Image
 from sentence_transformers import SentenceTransformer
+from starlette.datastructures import UploadFile
 
 from app.db import get_connection
 from embeddings.load_content_embeddings import load_content_embeddings
@@ -17,6 +25,83 @@ SUBTYPE_TABLES = {
     "course": "COURSE",
     "document": "DOCUMENT",
 }
+
+MINIO_ENDPOINT = os.environ.get("MINIO_ENDPOINT", "localhost:9000")
+MINIO_ROOT_USER = os.environ.get("MINIO_ROOT_USER", "admin")
+MINIO_ROOT_PASSWORD = os.environ.get("MINIO_ROOT_PASSWORD", "12345")
+MINIO_BUCKET = os.environ.get("MINIO_BUCKET", "assets")
+
+
+def get_minio_client():
+    return Minio(
+        MINIO_ENDPOINT,
+        access_key=MINIO_ROOT_USER,
+        secret_key=MINIO_ROOT_PASSWORD,
+        secure=False,
+    )
+
+
+def ensure_bucket(client: Minio, bucket_name: str = MINIO_BUCKET):
+    try:
+        if not client.bucket_exists(bucket_name):
+            client.make_bucket(bucket_name)
+    except S3Error as exc:
+        print(f"Aviso al verificar o crear el bucket {bucket_name}: {exc}")
+
+
+async def _handle_photo_upload(client: Minio, photo_file, form_data):
+    if isinstance(photo_file, UploadFile) and photo_file.filename:
+        file_bytes = await photo_file.read()
+        if len(file_bytes) > 0:
+            ensure_bucket(client, MINIO_BUCKET)
+            ext = os.path.splitext(photo_file.filename)[1]
+            safe_name = os.path.basename(photo_file.filename)
+            object_name = f"photos/{uuid.uuid4().hex[:8]}_{safe_name}"
+            content_type = photo_file.content_type or "image/jpeg"
+            client.put_object(
+                bucket_name=MINIO_BUCKET,
+                object_name=object_name,
+                data=io.BytesIO(file_bytes),
+                length=len(file_bytes),
+                content_type=content_type,
+            )
+            photo_url = f"http://{MINIO_ENDPOINT}/{MINIO_BUCKET}/{object_name}"
+            try:
+                with Image.open(io.BytesIO(file_bytes)) as img:
+                    width, height = img.size
+            except Exception:
+                width = int(form_data.get("width") or 800)
+                height = int(form_data.get("height") or 600)
+            return photo_url, width, height
+
+    photo_url = form_data.get("photo_url") or ""
+    width = int(form_data.get("width") or 800)
+    height = int(form_data.get("height") or 600)
+    return photo_url, width, height
+
+
+async def _handle_video_upload(client: Minio, video_file, form_data):
+    if isinstance(video_file, UploadFile) and video_file.filename:
+        file_bytes = await video_file.read()
+        if len(file_bytes) > 0:
+            ensure_bucket(client, MINIO_BUCKET)
+            safe_name = os.path.basename(video_file.filename)
+            object_name = f"videos/{uuid.uuid4().hex[:8]}_{safe_name}"
+            content_type = video_file.content_type or "video/mp4"
+            client.put_object(
+                bucket_name=MINIO_BUCKET,
+                object_name=object_name,
+                data=io.BytesIO(file_bytes),
+                length=len(file_bytes),
+                content_type=content_type,
+            )
+            video_url = f"http://{MINIO_ENDPOINT}/{MINIO_BUCKET}/{object_name}"
+            duration = int(form_data.get("duration_seconds") or 0)
+            return video_url, duration
+
+    video_url = form_data.get("video_url") or ""
+    duration = int(form_data.get("duration_seconds") or 0)
+    return video_url, duration
 
 
 def get_model():
@@ -91,8 +176,12 @@ def edit_content_form(request: Request, content_id: str, conn=Depends(get_connec
     )
 
 
-def _upsert_subtype(cur, content_id, content_type, form):
+async def _upsert_subtype(cur, content_id, content_type, form):
     if content_type == "video":
+        client = get_minio_client()
+        video_url, duration_seconds = await _handle_video_upload(
+            client, form.get("video_file"), form
+        )
         cur.execute(
             """
             INSERT INTO VIDEO (content_id, video_url, duration_seconds)
@@ -100,9 +189,13 @@ def _upsert_subtype(cur, content_id, content_type, form):
             ON CONFLICT (content_id) DO UPDATE
             SET video_url = EXCLUDED.video_url, duration_seconds = EXCLUDED.duration_seconds
             """,
-            (content_id, form["video_url"], int(form["duration_seconds"])),
+            (content_id, video_url, duration_seconds),
         )
     elif content_type == "photo":
+        client = get_minio_client()
+        photo_url, width, height = await _handle_photo_upload(
+            client, form.get("photo_file"), form
+        )
         cur.execute(
             """
             INSERT INTO PHOTO (content_id, photo_url, height, width)
@@ -110,7 +203,7 @@ def _upsert_subtype(cur, content_id, content_type, form):
             ON CONFLICT (content_id) DO UPDATE
             SET photo_url = EXCLUDED.photo_url, height = EXCLUDED.height, width = EXCLUDED.width
             """,
-            (content_id, form["photo_url"], int(form["height"]), int(form["width"])),
+            (content_id, photo_url, height, width),
         )
     elif content_type == "article":
         cur.execute(
@@ -168,7 +261,7 @@ async def create_content(request: Request, conn=Depends(get_connection)):
             (form["title"], form["creator_id"], form["content_type"], form.get("category_id") or None),
         )
         content_id = cur.fetchone()["id"]
-        _upsert_subtype(cur, content_id, form["content_type"], form)
+        await _upsert_subtype(cur, content_id, form["content_type"], form)
 
     conn.commit()
 
@@ -188,7 +281,7 @@ async def update_content(content_id: str, request: Request, conn=Depends(get_con
         )
         cur.execute("SELECT content_type FROM CONTENT WHERE id = %s", (content_id,))
         content_type = cur.fetchone()["content_type"]
-        _upsert_subtype(cur, content_id, content_type, form)
+        await _upsert_subtype(cur, content_id, content_type, form)
 
     conn.commit()
 
