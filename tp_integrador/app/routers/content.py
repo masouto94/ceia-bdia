@@ -2,7 +2,7 @@ import io
 import os
 import uuid
 
-from fastapi import APIRouter, Depends, Request
+from fastapi import APIRouter, Depends, HTTPException, Request, Response
 from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
 from minio import Minio
@@ -115,9 +115,12 @@ def list_content(request: Request, conn=Depends(get_connection)):
     with conn.cursor() as cur:
         cur.execute(
             """
-            SELECT c.id, c.title, c.content_type, cat.name AS category_name
+            SELECT c.id, c.title, c.content_type, cat.name AS category_name,
+                   p.photo_url, v.video_url
             FROM CONTENT c
             LEFT JOIN CATEGORY cat ON cat.id = c.category_id
+            LEFT JOIN PHOTO p ON p.content_id = c.id
+            LEFT JOIN VIDEO v ON v.content_id = c.id
             ORDER BY c.created_at DESC
             """
         )
@@ -169,6 +172,76 @@ def edit_content_form(request: Request, content_id: str, conn=Depends(get_connec
             "categories": categories,
         },
     )
+
+
+@router.get("/{content_id}/photo")
+def get_content_photo(content_id: str, conn=Depends(get_connection)):
+    with conn.cursor() as cur:
+        cur.execute("SELECT photo_url FROM PHOTO WHERE content_id = %s", (content_id,))
+        row = cur.fetchone()
+
+    if not row or not row.get("photo_url"):
+        raise HTTPException(status_code=404, detail="Foto no encontrada")
+
+    photo_url = row["photo_url"]
+    prefix = f"http://{MINIO_ENDPOINT}/{MINIO_BUCKET}/"
+
+    if photo_url.startswith(prefix):
+        object_name = photo_url[len(prefix):]
+    elif f"/{MINIO_BUCKET}/" in photo_url:
+        object_name = photo_url.split(f"/{MINIO_BUCKET}/", 1)[1]
+    elif photo_url.startswith("photos/"):
+        object_name = photo_url
+    else:
+        return RedirectResponse(photo_url)
+
+    client = get_minio_client()
+    try:
+        minio_response = client.get_object(MINIO_BUCKET, object_name)
+        data = minio_response.read()
+        content_type = minio_response.headers.get("content-type") or "image/jpeg"
+        minio_response.close()
+        minio_response.release_conn()
+        return Response(content=data, media_type=content_type)
+    except S3Error as exc:
+        raise HTTPException(status_code=404, detail=f"Error al obtener foto de MinIO: {exc}")
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=str(exc))
+
+
+@router.get("/{content_id}/video")
+def get_content_video(content_id: str, conn=Depends(get_connection)):
+    with conn.cursor() as cur:
+        cur.execute("SELECT video_url FROM VIDEO WHERE content_id = %s", (content_id,))
+        row = cur.fetchone()
+
+    if not row or not row.get("video_url"):
+        raise HTTPException(status_code=404, detail="Video no encontrado")
+
+    video_url = row["video_url"]
+    prefix = f"http://{MINIO_ENDPOINT}/{MINIO_BUCKET}/"
+
+    if video_url.startswith(prefix):
+        object_name = video_url[len(prefix):]
+    elif f"/{MINIO_BUCKET}/" in video_url:
+        object_name = video_url.split(f"/{MINIO_BUCKET}/", 1)[1]
+    elif video_url.startswith("videos/"):
+        object_name = video_url
+    else:
+        return RedirectResponse(video_url)
+
+    client = get_minio_client()
+    try:
+        minio_response = client.get_object(MINIO_BUCKET, object_name)
+        data = minio_response.read()
+        content_type = minio_response.headers.get("content-type") or "video/mp4"
+        minio_response.close()
+        minio_response.release_conn()
+        return Response(content=data, media_type=content_type)
+    except S3Error as exc:
+        raise HTTPException(status_code=404, detail=f"Error al obtener video de MinIO: {exc}")
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=str(exc))
 
 
 async def _upsert_subtype(cur, content_id, content_type, form):

@@ -9,11 +9,15 @@ SEARCH_SQL = """
         c.id,
         c.title,
         c.content_type,
+        p.photo_url,
+        v.video_url,
         ce.source_type,
         ce.chunk_text,
         1 - (ce.embedding <=> %(query_vector)s::vector) AS similarity
     FROM CONTENT_EMBEDDING ce
     JOIN CONTENT c ON c.id = ce.content_id
+    LEFT JOIN PHOTO p ON p.content_id = c.id
+    LEFT JOIN VIDEO v ON v.content_id = c.id
     ORDER BY ce.embedding <=> %(query_vector)s::vector
     LIMIT %(limit)s
 """
