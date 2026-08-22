@@ -4,7 +4,7 @@
 <a class="btn" href="/content/new">+ Nuevo contenido</a>
 <table>
     <thead>
-        <tr><th style="width: 70px;">Vista</th><th>Título</th><th>Tipo</th><th>Categoría</th><th>Acciones</th></tr>
+        <tr><th style="width: 70px;">Vista</th><th>Título</th><th>Tipo</th><th>Categoría</th><th>Creador</th><th>Acciones</th></tr>
     </thead>
     <tbody>
         {% for item in items %}
@@ -25,6 +25,7 @@
             <td><strong>{{ item.title }}</strong></td>
             <td>{{ item.content_type }}</td>
             <td>{{ item.category_name or "" }}</td>
+            <td>{{ item.creator_name or "" }}</td>
             <td class="actions">
                 <a href="/content/{{ item.id }}/edit">Editar</a>
                 <form class="inline" method="post" action="/content/{{ item.id }}/delete" onsubmit="return confirm('¿Eliminar contenido?')">

@@ -87,6 +87,7 @@ CREATE TABLE PREFERENCE (
 
 CREATE TABLE CONTENT (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    creator_id UUID NOT NULL REFERENCES "user"(id) ON DELETE RESTRICT,
     category_id UUID NOT NULL REFERENCES CATEGORY(id) ON DELETE RESTRICT,
     title VARCHAR(255) NOT NULL,
     content_type VARCHAR(50) NOT NULL,
@@ -218,6 +219,7 @@ CREATE INDEX idx_user_role_user_id ON USER_ROLE(user_id);
 CREATE INDEX idx_user_role_role_id ON USER_ROLE(role_id);
 CREATE INDEX idx_preference_user_id ON PREFERENCE(user_id);
 CREATE INDEX idx_preference_category_id ON PREFERENCE(category_id);
+CREATE INDEX idx_content_creator_id ON CONTENT(creator_id);
 CREATE INDEX idx_content_category_id ON CONTENT(category_id);
 CREATE INDEX idx_content_tag_content_id ON CONTENT_TAG(content_id);
 CREATE INDEX idx_content_tag_tag_id ON CONTENT_TAG(tag_id);

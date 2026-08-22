@@ -116,9 +116,10 @@ def list_content(request: Request, conn=Depends(get_connection)):
         cur.execute(
             """
             SELECT c.id, c.title, c.content_type, cat.name AS category_name,
-                   p.photo_url, v.video_url
+                   u.username AS creator_name, p.photo_url, v.video_url
             FROM CONTENT c
             LEFT JOIN CATEGORY cat ON cat.id = c.category_id
+            JOIN "user" u ON u.id = c.creator_id
             LEFT JOIN PHOTO p ON p.content_id = c.id
             LEFT JOIN VIDEO v ON v.content_id = c.id
             ORDER BY c.created_at DESC
@@ -135,10 +136,19 @@ def new_content_form(request: Request, conn=Depends(get_connection)):
     with conn.cursor() as cur:
         cur.execute("SELECT id, name FROM CATEGORY ORDER BY name")
         categories = cur.fetchall()
+
+        cur.execute('SELECT id, username FROM "user" ORDER BY username')
+        users = cur.fetchall()
+
     return templates.TemplateResponse(
         request,
         "content/form.html",
-        {"content": None, "subtype": None, "categories": categories},
+        {
+            "content": None,
+            "subtype": None,
+            "categories": categories,
+            "users": users,
+        },
     )
 
 
@@ -148,8 +158,14 @@ def edit_content_form(request: Request, content_id: str, conn=Depends(get_connec
         cur.execute("SELECT id, name FROM CATEGORY ORDER BY name")
         categories = cur.fetchall()
 
+        cur.execute('SELECT id, username FROM "user" ORDER BY username')
+        users = cur.fetchall()
+
         cur.execute(
-            "SELECT id, title, content_type, category_id FROM CONTENT WHERE id = %s",
+            """
+            SELECT id, title, content_type, category_id, creator_id
+            FROM CONTENT WHERE id = %s
+            """,
             (content_id,),
         )
         content = cur.fetchone()
@@ -170,6 +186,7 @@ def edit_content_form(request: Request, content_id: str, conn=Depends(get_connec
             "content": content,
             "subtype": subtype,
             "categories": categories,
+            "users": users,
         },
     )
 
@@ -322,11 +339,16 @@ async def create_content(request: Request, conn=Depends(get_connection)):
     with conn.cursor() as cur:
         cur.execute(
             """
-            INSERT INTO CONTENT (title, content_type, category_id)
-            VALUES (%s, %s, %s)
+            INSERT INTO CONTENT (title, content_type, category_id, creator_id)
+            VALUES (%s, %s, %s, %s)
             RETURNING id
             """,
-            (form["title"], form["content_type"], form.get("category_id") or None),
+            (
+                form["title"],
+                form["content_type"],
+                form.get("category_id") or None,
+                form.get("creator_id") or None,
+            ),
         )
         content_id = cur.fetchone()["id"]
         await _upsert_subtype(cur, content_id, form["content_type"], form)
@@ -344,8 +366,16 @@ async def update_content(content_id: str, request: Request, conn=Depends(get_con
 
     with conn.cursor() as cur:
         cur.execute(
-            "UPDATE CONTENT SET title = %s, category_id = %s WHERE id = %s",
-            (form["title"], form.get("category_id") or None, content_id),
+            """
+            UPDATE CONTENT SET title = %s, category_id = %s, creator_id = %s
+            WHERE id = %s
+            """,
+            (
+                form["title"],
+                form.get("category_id") or None,
+                form.get("creator_id") or None,
+                content_id,
+            ),
         )
         cur.execute("SELECT content_type FROM CONTENT WHERE id = %s", (content_id,))
         content_type = cur.fetchone()["content_type"]
