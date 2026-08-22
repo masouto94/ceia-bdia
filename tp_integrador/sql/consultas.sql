@@ -14,16 +14,14 @@ WHERE category.name = 'Bases de Datos'
   AND c.content_type = 'video'
 ORDER BY c.created_at DESC;
 
--- 2. Relaciones: contenidos, creador, categoria y etiquetas.
+-- 2. Relaciones: contenidos, categoria y etiquetas.
 -- Pregunta: que informacion descriptiva tiene cada contenido?
 SELECT
     c.id,
     c.title,
-    creator.username AS creator,
     category.name AS category,
     STRING_AGG(tag.name, ', ' ORDER BY tag.name) AS tags
 FROM CONTENT AS c
-JOIN "user" AS creator ON creator.id = c.creator_id
 JOIN CATEGORY AS category ON category.id = c.category_id
 LEFT JOIN CONTENT_TAG AS content_tag ON content_tag.content_id = c.id
 LEFT JOIN TAG AS tag ON tag.id = content_tag.tag_id

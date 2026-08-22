@@ -1,0 +1,50 @@
+erDiagram
+    ROL
+    USUARIO
+    USUARIO_ROL
+    CATEGORIA
+    ETIQUETA
+    PREFERENCIA
+    CONTENIDO
+    CONTENIDO_ETIQUETA
+    HISTORIAL
+    BUSQUEDA
+    RESULTADO_BUSQUEDA
+    INTERACCION
+    VISUALIZACION
+    REACCION
+    COMPARTICION
+    DENUNCIA
+    GESTION
+    VIDEO
+    ARTICULO
+    PUBLICACION
+    CURSO
+    DOCUMENTO
+    CONTENIDO_EMBEDDING
+
+    ROL ||--o{ USUARIO_ROL : asigna
+    USUARIO ||--o{ USUARIO_ROL : posee
+    USUARIO ||--o{ PREFERENCIA : declara
+    CATEGORIA ||--o{ PREFERENCIA : selecciona
+    CATEGORIA ||--o{ CONTENIDO : clasifica
+    USUARIO ||--o{ INTERACCION : realiza
+    CONTENIDO ||--o{ INTERACCION : recibe
+    USUARIO ||--o{ HISTORIAL : registra
+    CONTENIDO ||--o{ HISTORIAL : aparece_en
+    USUARIO ||--o{ BUSQUEDA : realiza
+    BUSQUEDA ||--o{ RESULTADO_BUSQUEDA : produce
+    CONTENIDO ||--o{ RESULTADO_BUSQUEDA : aparece_en
+    CONTENIDO ||--o{ CONTENIDO_ETIQUETA : posee
+    ETIQUETA ||--o{ CONTENIDO_ETIQUETA : asigna
+    INTERACCION ||--o| VISUALIZACION : especializa
+    INTERACCION ||--o| REACCION : especializa
+    INTERACCION ||--o| COMPARTICION : especializa
+    INTERACCION ||--o| DENUNCIA : especializa
+    INTERACCION ||--o| GESTION : especializa
+    CONTENIDO ||--o| VIDEO : especializa
+    CONTENIDO ||--o| ARTICULO : especializa
+    CONTENIDO ||--o| PUBLICACION : especializa
+    CONTENIDO ||--o| CURSO : especializa
+    CONTENIDO ||--o| DOCUMENTO : especializa
+    CONTENIDO ||--o{ CONTENIDO_EMBEDDING : vectoriza
