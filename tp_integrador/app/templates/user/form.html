@@ -13,6 +13,19 @@
     <input type="password" id="password" name="password" required>
     {% endif %}
 
+    <fieldset style="margin-top: 1.5rem; padding: 1rem; border: 1px solid #ddd; border-radius: 6px;">
+        <legend style="font-weight: bold; padding: 0 0.5rem;">Preferencias de Usuario</legend>
+        
+        <label for="max_results">Máximo de resultados en listas (result_list.max_results)</label>
+        <input type="number" id="max_results" name="max_results" min="1" max="1000" value="{{ preferences.get('result_list', {}).get('max_results', 10) if preferences else 10 }}" required>
+
+        <label for="theme">Tema de interfaz (ui.theme)</label>
+        <select id="theme" name="theme">
+            <option value="light" {% if preferences and preferences.get('ui', {}).get('theme') == 'light' %}selected{% endif %}>Claro (light)</option>
+            <option value="dark" {% if preferences and preferences.get('ui', {}).get('theme') == 'dark' %}selected{% endif %}>Oscuro (dark)</option>
+        </select>
+    </fieldset>
+
     <button type="submit">Guardar</button>
 </form>
 {% endblock %}

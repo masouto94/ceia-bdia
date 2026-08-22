@@ -137,4 +137,10 @@ INSERT INTO MANAGEMENT (id, interaction_id, action_type) VALUES
     (gen_random_uuid(), 'f8888888-8888-8888-8888-888888888888', 'create'),
     (gen_random_uuid(), 'f9999999-9999-9999-9999-999999999999', 'create');
 
+INSERT INTO USER_PREFERENCE (id, user_id, content, created_at) VALUES
+    (gen_random_uuid(), 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a22', '{"result_list":{"max_results":100},"ui":{"theme":"dark"}}', NOW() - INTERVAL '30 days'),
+    (gen_random_uuid(), 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a33', '{"result_list":{"max_results":50},"ui":{"theme":"light"}}', NOW() - INTERVAL '20 days'),
+    (gen_random_uuid(), 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a44', '{}', NOW() - INTERVAL '15 days'),
+    (gen_random_uuid(), 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a55', '{"ui":{"theme":"dark"}}', NOW() - INTERVAL '10 days');
+
 COMMIT;
