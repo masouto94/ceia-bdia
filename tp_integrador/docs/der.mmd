@@ -37,6 +37,7 @@ erDiagram
 
     CONTENT {
         uuid id PK
+        uuid creator_id FK
         uuid category_id FK
         varchar title
         varchar content_type
@@ -165,6 +166,7 @@ erDiagram
     USER ||--o{ SEARCH : "performs"
     USER ||--o{ INTERACTION : "initiates"
     USER ||--o{ USER_PREFERENCE : "configs"
+    USER ||--o{ CONTENT : "creates"
 
     CATEGORY ||--o{ PREFERENCE : "selected in"
     CATEGORY ||--o{ CONTENT : "classifies"
