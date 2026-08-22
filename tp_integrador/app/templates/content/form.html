@@ -5,16 +5,6 @@
     <label for="title">Título</label>
     <input type="text" id="title" name="title" value="{{ content.title if content else '' }}" required>
 
-    {% if not content %}
-    <label for="creator_id">Creador</label>
-    <select id="creator_id" name="creator_id" required>
-        <option value="">-- elegir creador --</option>
-        {% for creator in creators %}
-        <option value="{{ creator.id }}">{{ creator.username }}</option>
-        {% endfor %}
-    </select>
-    {% endif %}
-
     <label for="category_id">Categoría</label>
     <select id="category_id" name="category_id" required>
         <option value="">-- elegir categoría --</option>
