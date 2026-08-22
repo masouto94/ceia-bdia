@@ -25,7 +25,7 @@ FROM CONTENT AS c
 JOIN CATEGORY AS category ON category.id = c.category_id
 LEFT JOIN CONTENT_TAG AS content_tag ON content_tag.content_id = c.id
 LEFT JOIN TAG AS tag ON tag.id = content_tag.tag_id
-GROUP BY c.id, c.title, creator.username, category.name
+    GROUP BY c.id, c.title, category.name
 ORDER BY c.created_at DESC;
 
 -- 3. Agregacion: actividad por contenido.

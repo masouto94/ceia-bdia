@@ -27,7 +27,7 @@ Se descartan bases NoSQL y una base vectorial independiente para mantener una un
 ## Datos principales identificados
 
 - Usuarios, roles y preferencias declaradas.
-- Contenidos (video, articulo, post, curso, documento), categorias y etiquetas.
+- Contenidos (video, foto, articulo, post, curso, documento), categorias y etiquetas.
 - Historial de visualizaciones, busquedas y resultados de busqueda.
 - Interacciones (visualizacion, reaccion, compartido, denuncia, gestion).
 - Embeddings de fragmentos de texto para busqueda semantica.
@@ -73,7 +73,7 @@ uv run --project .. python -m embeddings.load_content_embeddings
 El archivo `sql/consultas.sql` incluye:
 
 1. filtrado por categoria y tipo;
-2. relacion entre contenido, creador, categoria y etiquetas;
+2. relacion entre contenido, categoria y etiquetas;
 3. agregacion de visualizaciones e interacciones;
 4. seleccion de contenidos segun preferencias e historial;
 5. consulta con `EXPLAIN` para revisar indices;
@@ -81,7 +81,8 @@ El archivo `sql/consultas.sql` incluye:
 
 ## Decisiones principales
 
-- Cada contenido pertenece a una unica categoria y su creacion se registra mediante `MANAGEMENT`.
+- Cada contenido pertenece a una unica categoria y referencia mediante `creator_id` al usuario creador.
+- `MANAGEMENT` registra acciones de gestion como edicion y eliminacion.
 - Las etiquetas, roles y resultados de busqueda se resuelven mediante tablas intermedias.
 - Los atributos especificos se separan en tablas por tipo de contenido.
 - Las interacciones comunes se almacenan en `INTERACTION` y sus detalles en tablas especializadas.

@@ -6,7 +6,7 @@ Se propone un portal general de contenidos donde los usuarios pueden consultar m
 
 ## 2. Relevamiento de datos
 
-Las entidades principales son usuarios, roles, contenidos, categorias, etiquetas, preferencias, historial, busquedas, resultados, interacciones y embeddings. Los contenidos pueden ser videos, articulos, publicaciones, cursos o documentos.
+Las entidades principales son usuarios, roles, contenidos, categorias, etiquetas, preferencias, historial, busquedas, resultados, interacciones y embeddings. Los contenidos pueden ser videos, fotos, articulos, publicaciones, cursos o documentos.
 
 ## 3. Clasificacion
 
@@ -22,7 +22,7 @@ Los ejemplos se encuentran en `data/ejemplos/` y `sql/seed.sql`.
 
 ## 4. Modelo conceptual
 
-El modelo conceptual se encuentra en `docs/der.mmd`. Un usuario puede gestionar contenidos mediante interacciones de tipo `MANAGEMENT`, realizar busquedas y generar interacciones. Cada contenido pertenece a una categoria y puede tener muchas etiquetas. Las busquedas producen resultados y los contenidos pueden tener varios fragmentos vectorizados.
+El modelo conceptual se encuentra en `docs/der.mmd`. Un usuario puede crear contenidos mediante la referencia `creator_id` y realizar busquedas e interacciones. Cada contenido pertenece a una categoria y puede tener muchas etiquetas. Las busquedas producen resultados y los contenidos pueden tener varios fragmentos vectorizados.
 
 ## 5. Modelo logico
 
@@ -30,7 +30,7 @@ El modelo logico se encuentra en `docs/modelo_logico.mmd` y muestra las tablas y
 
 ## 6. Normalizacion y decisiones
 
-El modelo relacional se organiza hasta 3FN. Se separan catalogos, entidades y relaciones para evitar redundancias y anomalías. `CONTENT_TAG`, `USER_ROLE` y `RESULTADO_BUSQUEDA` resuelven relaciones muchos-a-muchos. Las tablas de tipos especificos evitan columnas nulas. `MANAGEMENT` registra las acciones de creacion, edicion y eliminacion, evitando duplicar el creador en `CONTENT`. `CONTENT_EMBEDDING` es una representacion derivada y controlada para optimizar la busqueda semantica.
+El modelo relacional se organiza hasta 3FN. Se separan catalogos, entidades y relaciones para evitar redundancias y anomalías. `CONTENT_TAG`, `USER_ROLE` y `RESULTADO_BUSQUEDA` resuelven relaciones muchos-a-muchos. Las tablas de tipos especificos evitan columnas nulas. `creator_id` identifica al usuario creador de cada contenido y `MANAGEMENT` registra acciones posteriores de gestion. `CONTENT_EMBEDDING` es una representacion derivada y controlada para optimizar la busqueda semantica.
 
 ## 7. Tecnologia
 
