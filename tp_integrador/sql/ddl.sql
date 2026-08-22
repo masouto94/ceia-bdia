@@ -165,7 +165,8 @@ CREATE TABLE VIDEO (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     content_id UUID NOT NULL UNIQUE REFERENCES CONTENT(id) ON DELETE CASCADE,
     video_url VARCHAR(255) NOT NULL,
-    duration_seconds INT NOT NULL
+    duration_seconds INT NOT NULL,
+    description TEXT
 );
 
 CREATE TABLE PHOTO (
@@ -173,7 +174,8 @@ CREATE TABLE PHOTO (
     content_id UUID NOT NULL UNIQUE REFERENCES CONTENT(id) ON DELETE CASCADE,
     photo_url VARCHAR(255) NOT NULL,
     height INT NOT NULL,
-    width INT NOT NULL
+    width INT NOT NULL,
+    description TEXT
 );
 
 CREATE TABLE ARTICLE (

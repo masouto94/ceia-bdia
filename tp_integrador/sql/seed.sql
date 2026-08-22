@@ -52,11 +52,11 @@ INSERT INTO CONTENT (id, creator_id, category_id, title, content_type, created_a
     ('b5555555-5555-5555-5555-555555555555', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'c2222222-2222-2222-2222-222222222222', 'Especificación del TP Integrador BDIA', 'document', NOW() - INTERVAL '4 days'),
     ('b6666666-6666-6666-6666-666666666666', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a55', 'c4444444-4444-4444-4444-444444444444', 'Infraestructura y Despliegue en la Nube', 'photo', NOW() - INTERVAL '2 days');
 
-INSERT INTO VIDEO (id, content_id, video_url, duration_seconds) VALUES
-    (gen_random_uuid(), 'b1111111-1111-1111-1111-111111111111', 'http://localhost:9000/assets/tutorial_pg16.mp4', 3600);
+INSERT INTO VIDEO (id, content_id, video_url, duration_seconds, description) VALUES
+    (gen_random_uuid(), 'b1111111-1111-1111-1111-111111111111', 'http://localhost:9000/assets/tutorial_pg16.mp4', 3600, 'Tutorial completo de PostgreSQL 16 desde cero. Se cubren instalacion, tipos de datos, consultas SQL avanzadas, indices, vistas, transacciones y extension pgvector para busqueda semantica. Orientado a desarrolladores y estudiantes de bases de datos.');
 
-INSERT INTO PHOTO (id, content_id, photo_url, height, width) VALUES
-    (gen_random_uuid(), 'b6666666-6666-6666-6666-666666666666', 'http://localhost:9000/assets/infraestructura_cloud.png', 1080, 1920);
+INSERT INTO PHOTO (id, content_id, photo_url, height, width, description) VALUES
+    (gen_random_uuid(), 'b6666666-6666-6666-6666-666666666666', 'http://localhost:9000/assets/infraestructura_cloud.png', 1080, 1920, 'Diagrama de infraestructura y despliegue en la nube. Ilustra la arquitectura de microservicios con contenedores Docker, balanceo de carga, almacenamiento de objetos S3 y bases de datos gestionadas en entornos cloud.');
 
 INSERT INTO ARTICLE (id, content_id, author, full_text) VALUES
     (gen_random_uuid(), 'b2222222-2222-2222-2222-222222222222', 'Alice Smith', 'Los modelos de lenguaje de gran escala (LLM) han revolucionado el procesamiento de lenguaje natural...');

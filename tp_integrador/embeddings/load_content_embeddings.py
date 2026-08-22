@@ -24,11 +24,13 @@ SELECT_CONTENT = """
         content.title,
         post.body,
         article.full_text,
-        course.description
+        COALESCE(course.description, video.description, photo.description) AS description
     FROM CONTENT content
     LEFT JOIN POST post ON post.content_id = content.id
     LEFT JOIN ARTICLE article ON article.content_id = content.id
     LEFT JOIN COURSE course ON course.content_id = content.id
+    LEFT JOIN VIDEO video ON video.content_id = content.id
+    LEFT JOIN PHOTO photo ON photo.content_id = content.id
 """
 
 UPSERT_EMBEDDING = """
