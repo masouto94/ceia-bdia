@@ -1,13 +1,23 @@
 {% extends "base.html" %}
 {% block content %}
 <h1>{{ "Editar" if content else "Nuevo" }} contenido</h1>
-<form method="post" action="{{ '/content/' ~ content.id if content else '/content' }}">
+<form method="post" enctype="multipart/form-data" action="{{ '/content/' ~ content.id if content else '/content' }}">
     <label for="title">Título</label>
     <input type="text" id="title" name="title" value="{{ content.title if content else '' }}" required>
 
+    <label for="creator_id">Creador</label>
+    <select id="creator_id" name="creator_id" required>
+        <option value="">-- elegir creador --</option>
+        {% for user in users %}
+        <option value="{{ user.id }}" {% if content and content.creator_id == user.id %}selected{% endif %}>
+            {{ user.username }}
+        </option>
+        {% endfor %}
+    </select>
+
     <label for="category_id">Categoría</label>
-    <select id="category_id" name="category_id">
-        <option value="">-- sin categoría --</option>
+    <select id="category_id" name="category_id" required>
+        <option value="">-- elegir categoría --</option>
         {% for category in categories %}
         <option value="{{ category.id }}" {% if content and content.category_id == category.id %}selected{% endif %}>
             {{ category.name }}
@@ -18,7 +28,7 @@
     <label for="content_type">Tipo</label>
     <select id="content_type" name="{{ 'content_type_display' if content else 'content_type' }}" onchange="showSubtypeFields()" {% if content %}disabled{% endif %} required>
         <option value="">-- elegir --</option>
-        {% for value in ["video", "article", "post", "course", "document"] %}
+        {% for value in ["video", "photo", "article", "post", "course", "document"] %}
         <option value="{{ value }}" {% if content and content.content_type == value %}selected{% endif %}>{{ value }}</option>
         {% endfor %}
     </select>
@@ -27,10 +37,65 @@
     {% endif %}
 
     <fieldset id="fields-video" class="subtype-fields">
-        <label for="video_url">URL del video</label>
-        <input type="text" id="video_url" name="video_url" value="{{ subtype.video_url if subtype else '' }}">
+        <label for="video_file">Subir archivo de video a MinIO</label>
+        <input type="file" id="video_file" name="video_file" accept="video/*" onchange="previewSelectedVideo(event)">
+        
+        <div id="video_preview_container" style="margin-top: 0.75rem;">
+            {% if content and subtype and subtype.video_url %}
+            <div id="current_video_box" style="margin-bottom: 0.5rem;">
+                <p style="margin: 0.25rem 0 0.5rem 0; font-size: 0.85rem; color: #555;">Video actual:</p>
+                <video id="video_player_preview" controls src="/content/{{ content.id }}/video" style="max-width: 360px; max-height: 240px; border-radius: 6px; border: 1px solid #ccc; display: block;"></video>
+            </div>
+            {% elif subtype and subtype.video_url %}
+            <div id="current_video_box" style="margin-bottom: 0.5rem;">
+                <p style="margin: 0.25rem 0 0.5rem 0; font-size: 0.85rem; color: #555;">Video actual:</p>
+                <video id="video_player_preview" controls src="{{ subtype.video_url }}" style="max-width: 360px; max-height: 240px; border-radius: 6px; border: 1px solid #ccc; display: block;"></video>
+            </div>
+            {% else %}
+            <div id="current_video_box" style="margin-bottom: 0.5rem;">
+                <video id="video_player_preview" controls src="" style="max-width: 360px; max-height: 240px; border-radius: 6px; border: 1px solid #ccc; display: none;"></video>
+            </div>
+            {% endif %}
+        </div>
+
+        <label for="video_url">O ingresar URL del video</label>
+        <input type="text" id="video_url" name="video_url" value="{{ subtype.video_url if subtype else '' }}" oninput="previewUrlVideo(this.value)">
         <label for="video_duration_seconds">Duración (segundos)</label>
-        <input type="number" id="video_duration_seconds" name="duration_seconds" value="{{ subtype.duration_seconds if subtype else '' }}">
+        <input type="number" id="video_duration_seconds" name="duration_seconds" value="{{ subtype.duration_seconds if subtype else '0' }}">
+    </fieldset>
+
+    <fieldset id="fields-photo" class="subtype-fields">
+        <label for="photo_file">Subir archivo de foto a MinIO</label>
+        <input type="file" id="photo_file" name="photo_file" accept="image/*" onchange="previewSelectedImage(event)">
+        
+        <div id="photo_preview_container" style="margin-top: 0.75rem;">
+            {% if content and subtype and subtype.photo_url %}
+            <div id="current_photo_box" style="margin-bottom: 0.5rem;">
+                <p style="margin: 0.25rem 0 0.5rem 0; font-size: 0.85rem; color: #555;">Foto actual:</p>
+                <a href="/content/{{ content.id }}/photo" target="_blank" title="Ver imagen completa">
+                    <img id="photo_img_preview" src="/content/{{ content.id }}/photo" alt="{{ content.title if content else 'Foto' }}" style="max-width: 320px; max-height: 240px; width: auto; height: auto; border-radius: 6px; border: 1px solid #ccc; display: block; object-fit: contain; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                </a>
+            </div>
+            {% elif subtype and subtype.photo_url %}
+            <div id="current_photo_box" style="margin-bottom: 0.5rem;">
+                <p style="margin: 0.25rem 0 0.5rem 0; font-size: 0.85rem; color: #555;">Foto actual:</p>
+                <a href="{{ subtype.photo_url }}" target="_blank" title="Ver imagen completa">
+                    <img id="photo_img_preview" src="{{ subtype.photo_url }}" alt="{{ content.title if content else 'Foto' }}" style="max-width: 320px; max-height: 240px; width: auto; height: auto; border-radius: 6px; border: 1px solid #ccc; display: block; object-fit: contain; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                </a>
+            </div>
+            {% else %}
+            <div id="current_photo_box" style="margin-bottom: 0.5rem;">
+                <img id="photo_img_preview" src="" alt="Vista previa de imagen" style="max-width: 320px; max-height: 240px; width: auto; height: auto; border-radius: 6px; border: 1px solid #ccc; display: none; object-fit: contain; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+            </div>
+            {% endif %}
+        </div>
+
+        <label for="photo_url">O ingresar URL de la foto</label>
+        <input type="text" id="photo_url" name="photo_url" value="{{ subtype.photo_url if subtype else '' }}" oninput="previewUrlImage(this.value)">
+        <label for="photo_width">Ancho (px)</label>
+        <input type="number" id="photo_width" name="width" value="{{ subtype.width if subtype else '' }}">
+        <label for="photo_height">Alto (px)</label>
+        <input type="number" id="photo_height" name="height" value="{{ subtype.height if subtype else '' }}">
     </fieldset>
 
     <fieldset id="fields-article" class="subtype-fields">
@@ -72,5 +137,43 @@
         });
     }
     showSubtypeFields();
+
+    function previewSelectedImage(event) {
+        const file = event.target.files[0];
+        const preview = document.getElementById("photo_img_preview");
+        if (file && preview) {
+            preview.src = URL.createObjectURL(file);
+            preview.style.display = "block";
+        }
+    }
+
+    function previewUrlImage(url) {
+        const preview = document.getElementById("photo_img_preview");
+        if (preview) {
+            if (url && url.trim().length > 0) {
+                preview.src = url.trim();
+                preview.style.display = "block";
+            }
+        }
+    }
+
+    function previewSelectedVideo(event) {
+        const file = event.target.files[0];
+        const player = document.getElementById("video_player_preview");
+        if (file && player) {
+            player.src = URL.createObjectURL(file);
+            player.style.display = "block";
+        }
+    }
+
+    function previewUrlVideo(url) {
+        const player = document.getElementById("video_player_preview");
+        if (player) {
+            if (url && url.trim().length > 0) {
+                player.src = url.trim();
+                player.style.display = "block";
+            }
+        }
+    }
 </script>
 {% endblock %}

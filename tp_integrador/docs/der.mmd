@@ -37,6 +37,7 @@ erDiagram
 
     CONTENT {
         uuid id PK
+        uuid creator_id FK
         uuid category_id FK
         varchar title
         varchar content_type
@@ -113,6 +114,16 @@ erDiagram
         uuid content_id FK
         varchar video_url
         int duration_seconds
+        text description
+    }
+
+    PHOTO {
+        uuid id PK
+        uuid content_id FK
+        varchar photo_url
+        int height
+        int width
+        text description
     }
 
     ARTICLE {
@@ -142,6 +153,13 @@ erDiagram
         int file_size_kb
     }
 
+    USER_PREFERENCE {
+        uuid id PK
+        uuid user_id FK
+        jsonb content
+        timestamp created_at
+    }
+
     USER ||--o{ USER_ROLE : "has"
     ROLE ||--o{ USER_ROLE : "assigned to"
 
@@ -149,6 +167,8 @@ erDiagram
     USER ||--o{ HISTORY : "logs"
     USER ||--o{ SEARCH : "performs"
     USER ||--o{ INTERACTION : "initiates"
+    USER ||--o{ USER_PREFERENCE : "configs"
+    USER ||--o{ CONTENT : "creates"
 
     CATEGORY ||--o{ PREFERENCE : "selected in"
     CATEGORY ||--o{ CONTENT : "classifies"
@@ -169,6 +189,7 @@ erDiagram
     INTERACTION ||--o| MANAGEMENT : "specializes as"
 
     CONTENT ||--o| VIDEO : "specializes as"
+    CONTENT ||--o| PHOTO : "specializes as"
     CONTENT ||--o| ARTICLE : "specializes as"
     CONTENT ||--o| POST : "specializes as"
     CONTENT ||--o| COURSE : "specializes as"
