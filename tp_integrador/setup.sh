@@ -20,7 +20,7 @@ fi
 
 docker compose up -d
 
-# Upload seed media files to MinIO
+# Cargando seed media en MinIO
 MINIO_URL="http://localhost:9000"
 MINIO_USER="admin"
 MINIO_PASS="12345678"
