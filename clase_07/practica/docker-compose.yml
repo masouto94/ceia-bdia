@@ -1,0 +1,128 @@
+name: bdia_clase_07
+
+services:
+  postgres-vectorial:
+    image: pgvector/pgvector:pg17
+    container_name: bdia_clase07_postgres_vectorial
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "127.0.0.1:${POSTGRES_PORT}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./postgres:/sql:ro
+      - ./scripts:/scripts:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 10s
+    networks: [bdia_network]
+
+  loader-embeddings:
+    build:
+      context: .
+      dockerfile: Dockerfile.loader
+    image: bdia-clase07-loader:1.0
+    container_name: bdia_clase07_loader_embeddings
+    restart: unless-stopped
+    entrypoint: ["/bin/sh", "-c"]
+    command: ["trap : TERM INT; sleep infinity & wait"]
+    environment:
+      POSTGRES_HOST: postgres-vectorial
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      MODELO_EMBEDDING: ${MODELO_EMBEDDING}
+    volumes:
+      - ./data:/workspace/data
+      - ./scripts:/workspace/scripts:ro
+      - modelo_cache:/root/.cache
+    depends_on:
+      postgres-vectorial:
+        condition: service_healthy
+    networks: [bdia_network]
+
+  pgadmin-vectorial:
+    image: dpage/pgadmin4:9.5
+    container_name: bdia_clase07_pgadmin_vectorial
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+      PGADMIN_CONFIG_SERVER_MODE: "False"
+      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: "False"
+    ports:
+      - "127.0.0.1:${PGADMIN_PORT}:80"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+      - ./postgres:/home/pgadmin/postgres:ro
+    depends_on:
+      postgres-vectorial:
+        condition: service_healthy
+    networks: [bdia_network]
+
+  embeddings-api:
+    build:
+      context: .
+      dockerfile: Dockerfile.loader
+    image: bdia-clase07-loader:1.0
+    container_name: bdia_clase07_embeddings_api
+    restart: unless-stopped
+    working_dir: /workspace/scripts
+    command: ["uvicorn", "embeddings_api:app", "--host", "0.0.0.0", "--port", "8000"]
+    environment:
+      MODELO_EMBEDDING: ${MODELO_EMBEDDING}
+    ports:
+      - "127.0.0.1:${EMBEDDINGS_API_PORT:-8011}:8000"
+    volumes:
+      - ./scripts:/workspace/scripts:ro
+      - modelo_cache:/root/.cache
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/salud"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 60s
+    networks: [bdia_network]
+
+  web-ui:
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+    image: bdia-clase07-web:1.0
+    container_name: bdia_clase07_web_ui
+    restart: unless-stopped
+    environment:
+      POSTGRES_HOST: postgres-vectorial
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: ${POSTGRES_DB}
+      APLICACION_DB_USER: ${APLICACION_DB_USER:-aplicacion}
+      APLICACION_DB_PASSWORD: ${APLICACION_DB_PASSWORD:-aplicacion_pass}
+      APLICACION_SOLO_LECTURA_DB_USER: ${APLICACION_SOLO_LECTURA_DB_USER:-aplicacion_solo_lectura}
+      APLICACION_SOLO_LECTURA_DB_PASSWORD: ${APLICACION_SOLO_LECTURA_DB_PASSWORD:-solo_lectura_pass}
+      EMBEDDINGS_API_URL: http://embeddings-api:8000
+      OPENROUTER_API_KEY: ${OPENROUTER_API_KEY:-}
+      OPENROUTER_MODEL: ${OPENROUTER_MODEL:-openai/gpt-4o-mini}
+    ports:
+      - "127.0.0.1:${WEB_PORT:-3001}:3000"
+    depends_on:
+      postgres-vectorial:
+        condition: service_healthy
+      embeddings-api:
+        condition: service_healthy
+    networks: [bdia_network]
+
+volumes:
+  postgres_data:
+  pgadmin_data:
+  modelo_cache:
+
+networks:
+  bdia_network:
+    driver: bridge

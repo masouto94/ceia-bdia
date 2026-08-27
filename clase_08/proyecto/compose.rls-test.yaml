@@ -1,0 +1,4 @@
+services:
+  db:
+    ports: !override
+      - "${RLS_DB_PORT:-15432}:5432"

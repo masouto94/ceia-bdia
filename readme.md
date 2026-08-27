@@ -60,7 +60,7 @@ Arquitecturas multi-tenant. Row Level Security en PostgreSQL. Aislamiento de dat
 
 ### Clase 8 — Repaso, Caso Práctico Integrador y Consultas
 
-Repaso general de contenidos. Resolución de un caso práctico integrador. Validación de avances, consultas y defensa del trabajo práctico final.
+Repaso general de contenidos. Resolución de un caso práctico integrador. Validación de avances y consultas del trabajo práctico final.
 
 ---
 

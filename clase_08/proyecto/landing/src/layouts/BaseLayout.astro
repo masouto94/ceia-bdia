@@ -1,0 +1,21 @@
+---
+import "../styles/global.css";
+
+interface Props { title?: string; description?: string }
+const { title = "Espacio de experimentos", description = "Espacio educativo para experimentos de IA, datos y conocimiento técnico." } = Astro.props;
+const themeScript = `(() => { const key = "student-project-theme"; const storageTheme = () => { try { return localStorage.getItem(key); } catch { return null; } }; const saved = storageTheme(); const theme = saved === "dark" || saved === "light" ? saved : (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"); document.documentElement.dataset.theme = theme; document.documentElement.style.colorScheme = theme; })()`;
+---
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <meta name="robots" content="index,follow" />
+    <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site)} />
+    <link rel="preload" as="font" type="font/woff2" crossorigin href="/fonts/montserrat-latin-400-600.woff2" />
+    <title>{title}</title>
+    <script is:inline set:html={themeScript}></script>
+  </head>
+  <body><a class="skip-link" href="#main">Saltar al contenido</a><slot /></body>
+</html>

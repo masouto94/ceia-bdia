@@ -13,6 +13,7 @@ Thumbs.db
 .opencode/
 .claude/
 .cursor/
+.codegraph/
 AGENTS.md
 CLAUDE.md
 
@@ -31,6 +32,9 @@ CLAUDE.md
 tmp/
 temp/
 
+# Dependencias instaladas en la raíz
+/node_modules/
+
 # Archivos generados opcionales
 exports/
 
@@ -43,3 +47,5 @@ tp_integrador/pgadmin_data
 tp_integrador/postgres_data
 tp_integrador/minio_data
 __pycache__/
+# Artefactos locales de planificación OpenSpec
+/openspec/

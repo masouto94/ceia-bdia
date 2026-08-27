@@ -1,0 +1,13 @@
+alembic==1.17.2
+email-validator==2.3.0
+fastapi==0.120.0
+minio==7.2.20
+pgvector==0.4.2
+pydantic-settings==2.11.0
+pypdf==6.6.2
+python-multipart==0.0.22
+requests==2.32.5
+types-requests==2.32.4.20250913
+psycopg[binary]==3.3.2
+SQLAlchemy==2.0.44
+uvicorn==0.38.0
